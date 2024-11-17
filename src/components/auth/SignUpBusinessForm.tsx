@@ -1,55 +1,34 @@
+import { signUpBusinessSchema } from "@/lib/schemas/signUpBusinessSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "../ui/button";
-import { Form, FormControl, FormField, FormItem, FormLabel } from "../ui/form";
+import { Form, FormControl, FormField, FormItem, FormMessage } from "../ui/form";
 import { Input } from "../ui/input";
+import { Separator } from "../ui/separator";
 
-const validationSchema = z
-  .object({
-    username: z
-      .string()
-      .min(3, { message: "Nazwa użytkownika musi mieć minimum 3 znaki" }),
-    email: z.string().email({ message: "Nieprawidłowy adres e-mail" }).trim(),
-    password: z
-      .string()
-      .min(8, { message: "Hasło musi mieć minimum 8 znaków" })
-      .trim(),
-    confirmPassword: z
-      .string()
-      .min(8, { message: "Hasło musi mieć minimum 8 znaków" })
-      .trim(),
-    companyName: z.string(),
-    companyNip: z
-      .string()
-      .min(10, { message: "NIP musi mieć 10 cyfr" })
-      .max(10, { message: "NIP musi mieć 10 cyfr" }),
-    companyAddress: z.string(),
-    companyPostalCode: z.string(),
-    companyCity: z.string(),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Hasła się nie zgadzają",
-    path: ["confirmPassword"],
-  });
 
-function onSubmit(values: z.infer<typeof validationSchema>) {
-  axios.post("http://localhost:5000/auth/basic/signup/personal", values);
+
+function onSubmit(values: z.infer<typeof signUpBusinessSchema>) {
+  axios.post("http://localhost:5000/auth/basic/signup/business", values);
   console.log(values);
 }
 
 export default function SignUpBusinessForm() {
-  const form = useForm<z.infer<typeof validationSchema>>({
-    resolver: zodResolver(validationSchema),
+  const form = useForm<z.infer<typeof signUpBusinessSchema>>({
+    resolver: zodResolver(signUpBusinessSchema),
     defaultValues: {
-      username: "",
+      firstName: "",
+      lastName: "",
       email: "",
       password: "",
-      confirmPassword: "",
+      repeatPassword: "",
       companyName: "",
       companyNip: "",
-      companyAddress: "",
+      companyStreet: "",
+      companyBuilding: "",
+      companyApartment: "",
       companyPostalCode: "",
       companyCity: "",
     },
@@ -57,27 +36,44 @@ export default function SignUpBusinessForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)}>
-        <FormField
-          name="username"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Nazwa użytkownika</FormLabel>
-              <FormControl>
-                <Input {...field} type="text" placeholder="Nazwa użytkownika" />
-              </FormControl>
-            </FormItem>
-          )}
-        />
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="flex flex-col gap-5 w-full"
+      >
+        <div className="flex justify-between gap-5">
+          <FormField
+            name="firstName"
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <Input {...field} type="text" placeholder="Imię" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            name="lastName"
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <Input {...field} type="text" placeholder="Nazwisko" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
 
         <FormField
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Adres e-mail</FormLabel>
               <FormControl>
                 <Input {...field} type="email" placeholder="Adres e-mail" />
               </FormControl>
+              <FormMessage />
             </FormItem>
           )}
         />
@@ -86,19 +82,18 @@ export default function SignUpBusinessForm() {
           <FormField
             name="password"
             render={({ field }) => (
-              <FormItem className="w-1/2">
-                <FormLabel>Hasło</FormLabel>
+              <FormItem>
                 <FormControl>
                   <Input {...field} type="password" placeholder="Hasło" />
                 </FormControl>
+                <FormMessage />
               </FormItem>
             )}
           />
           <FormField
-            name="confirmPassword"
+            name="repeatPassword"
             render={({ field }) => (
-              <FormItem className="w-1/2">
-                <FormLabel>Powtórz hasło</FormLabel>
+              <FormItem>
                 <FormControl>
                   <Input
                     {...field}
@@ -106,21 +101,26 @@ export default function SignUpBusinessForm() {
                     placeholder="Powtórz hasło"
                   />
                 </FormControl>
+                <FormMessage />
               </FormItem>
             )}
           />
         </div>
 
-        <h2 className="my-2 font-medium">Dane firmowe</h2>
+        <div className=" flex gap-5 items-center justify-center">
+          <Separator decorative className="w-1/3" />
+          <h2 className="w-1/3 text-xs text-center font-semibold">Dane firmowe</h2>
+          <Separator decorative className="w-1/3" />
+        </div>
 
         <FormField
           name="companyName"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Nazwa</FormLabel>
               <FormControl>
                 <Input {...field} type="text" placeholder="Nazwa" />
               </FormControl>
+              <FormMessage />
             </FormItem>
           )}
         />
@@ -129,34 +129,60 @@ export default function SignUpBusinessForm() {
           name="companyNip"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Numer NIP</FormLabel>
               <FormControl>
                 <Input {...field} type="text" placeholder="Numer NIP" />
               </FormControl>
+              <FormMessage />
             </FormItem>
           )}
         />
 
         <FormField
-          name="companyAddress"
+          name="companyStreet"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Ulica</FormLabel>
               <FormControl>
                 <Input {...field} type="text" placeholder="Ulica" />
               </FormControl>
+              <FormMessage />
             </FormItem>
           )}
         />
+
+        <div className="w-full flex justify-between gap-5">
+          <FormField
+            name="companyBuilding"
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <Input {...field} type="text" placeholder="Nr. budynku" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            name="companyApartment"
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <Input {...field} type="text" placeholder="Nr. lokalu (Opcjonalne)" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
 
         <FormField
           name="companyPostalCode"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Kod pocztowy</FormLabel>
               <FormControl>
                 <Input {...field} type="text" placeholder="Kod pocztowy" />
               </FormControl>
+              <FormMessage />
             </FormItem>
           )}
         />
@@ -165,10 +191,10 @@ export default function SignUpBusinessForm() {
           name="companyCity"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Miasto</FormLabel>
               <FormControl>
                 <Input {...field} type="text" placeholder="Miasto" />
               </FormControl>
+              <FormMessage />
             </FormItem>
           )}
         />
