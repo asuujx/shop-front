@@ -12,7 +12,7 @@ import { Separator } from "../ui/separator";
 
 function onSubmit(values: z.infer<typeof signUpBusinessSchema>) {
   axios.post("http://localhost:5000/auth/basic/signup/business", values);
-  console.log(values);
+  console.log(values.companyApartment);
 }
 
 export default function SignUpBusinessForm() {
