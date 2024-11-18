@@ -1,3 +1,4 @@
+import { useToast } from "@/hooks/use-toast";
 import { signUpBusinessSchema } from "@/lib/schemas/signUpBusinessSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
@@ -15,13 +16,23 @@ export default function SignUpBusinessForm() {
   const [open, setOpen] = useState(false);
   const [email, setEmail] = useState("");
 
-  const onSubmit = async (values: z.infer<typeof signUpBusinessSchema>) => {
-    const response = await axios.post("http://localhost:5000/auth/basic/signup/business", values);
+  const { toast } = useToast();
 
-    if (response.status === 201) {
-      setEmail(values.email);
-      setOpen(true);
-    }
+  const onSubmit = (values: z.infer<typeof signUpBusinessSchema>) => {
+    axios.post("http://localhost:5000/auth/basic/signup/business", values).catch((error) => {
+      // console.log(error.response.status);
+      if (error.response.status === 201) {
+        setOpen(true);
+        setEmail(values.email);
+      }
+      if (error.response.status === 403) {
+        toast({
+          variant: "destructive",
+          title: "Wystąpił błąd",
+          description: "Adres e-mail lub NIP jest już zajęty.",
+        });
+      }
+    });
 
     // console.log(values);
   }

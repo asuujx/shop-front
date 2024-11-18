@@ -1,3 +1,4 @@
+import { useToast } from "@/hooks/use-toast";
 import { signUpPersonalSchema } from "@/lib/schemas/signUpPersonalSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
@@ -20,6 +21,8 @@ function SignUpPersonalForm() {
   const [open, setOpen] = useState(false);
   const [email, setEmail] = useState("");
 
+  const { toast } = useToast();
+
   const form = useForm<z.infer<typeof signUpPersonalSchema>>({
     resolver: zodResolver(signUpPersonalSchema),
     defaultValues: {
@@ -31,18 +34,25 @@ function SignUpPersonalForm() {
     },
   });
 
-  const onSubmit = async (values: z.infer<typeof signUpPersonalSchema>) => {
-      const response = await axios.post(
-        "http://localhost:5000/auth/basic/signup/personal",
-        values
-      );
+  const onSubmit = (values: z.infer<typeof signUpPersonalSchema>) => {
+    axios
+      .post("http://localhost:5000/auth/basic/signup/personal", values)
+      .catch((error) => {
+        // console.log(error.response.status);
+        if (error.response.status === 201) {
+          setOpen(true);
+          setEmail(values.email);
+        }
+        if (error.response.status === 403) {
+          toast({
+            variant: "destructive",
+            title: "Wystąpił błąd",
+            description: "Podany adres e-mail jest już zajęty.",
+          });
+        }
+      });
 
-      if (response.status === 201) {
-        setOpen(true);
-        setEmail(values.email);
-      }
-
-      // console.log(values);
+    // console.log(values);
   };
 
   return (
