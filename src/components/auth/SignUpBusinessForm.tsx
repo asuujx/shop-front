@@ -1,21 +1,31 @@
 import { signUpBusinessSchema } from "@/lib/schemas/signUpBusinessSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "../ui/button";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "../ui/form";
 import { Input } from "../ui/input";
 import { Separator } from "../ui/separator";
-
-
-
-function onSubmit(values: z.infer<typeof signUpBusinessSchema>) {
-  axios.post("http://localhost:5000/auth/basic/signup/business", values);
-  console.log(values.companyApartment);
-}
+import SignUpDialog from "./SignUpDialog";
 
 export default function SignUpBusinessForm() {
+  // Change state of the dialog
+  const [open, setOpen] = useState(false);
+  const [email, setEmail] = useState("");
+
+  const onSubmit = async (values: z.infer<typeof signUpBusinessSchema>) => {
+    const response = await axios.post("http://localhost:5000/auth/basic/signup/business", values);
+
+    if (response.status === 201) {
+      setEmail(values.email);
+      setOpen(true);
+    }
+
+    // console.log(values);
+  }
+
   const form = useForm<z.infer<typeof signUpBusinessSchema>>({
     resolver: zodResolver(signUpBusinessSchema),
     defaultValues: {
@@ -109,7 +119,9 @@ export default function SignUpBusinessForm() {
 
         <div className=" flex gap-5 items-center justify-center">
           <Separator decorative className="w-1/3" />
-          <h2 className="w-1/3 text-xs text-center font-semibold">Dane firmowe</h2>
+          <h2 className="w-1/3 text-xs text-center font-semibold">
+            Dane firmowe
+          </h2>
           <Separator decorative className="w-1/3" />
         </div>
 
@@ -167,7 +179,11 @@ export default function SignUpBusinessForm() {
             render={({ field }) => (
               <FormItem>
                 <FormControl>
-                  <Input {...field} type="text" placeholder="Nr. lokalu (Opcjonalne)" />
+                  <Input
+                    {...field}
+                    type="text"
+                    placeholder="Nr. lokalu (Opcjonalne)"
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -198,6 +214,8 @@ export default function SignUpBusinessForm() {
             </FormItem>
           )}
         />
+
+        <SignUpDialog open={open} setOpen={setOpen} email={email} />
 
         <Button type="submit" className="w-full mt-5">
           Utwórz konto firmowe

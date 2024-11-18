@@ -1,6 +1,7 @@
 import { signUpPersonalSchema } from "@/lib/schemas/signUpPersonalSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "../ui/button";
@@ -9,11 +10,16 @@ import {
   FormControl,
   FormField,
   FormItem,
-  FormMessage
+  FormMessage,
 } from "../ui/form";
 import { Input } from "../ui/input";
+import SignUpDialog from "./SignUpDialog";
 
 function SignUpPersonalForm() {
+  // Change state of the dialog
+  const [open, setOpen] = useState(false);
+  const [email, setEmail] = useState("");
+
   const form = useForm<z.infer<typeof signUpPersonalSchema>>({
     resolver: zodResolver(signUpPersonalSchema),
     defaultValues: {
@@ -25,26 +31,33 @@ function SignUpPersonalForm() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof signUpPersonalSchema>) {
-    axios.post("http://localhost:5000/auth/basic/signup/personal", values);
+  const onSubmit = async (values: z.infer<typeof signUpPersonalSchema>) => {
+      const response = await axios.post(
+        "http://localhost:5000/auth/basic/signup/personal",
+        values
+      );
 
-    // console.log(values);
-  }
+      if (response.status === 201) {
+        setOpen(true);
+        setEmail(values.email);
+      }
+
+      // console.log(values);
+  };
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-5">
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="flex flex-col gap-5"
+      >
         <div className="flex justify-between">
           <FormField
             name="firstName"
             render={({ field }) => (
               <FormItem>
                 <FormControl>
-                  <Input
-                    {...field}
-                    type="text"
-                    placeholder="Imię"
-                  />
+                  <Input {...field} type="text" placeholder="Imię" />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -56,11 +69,7 @@ function SignUpPersonalForm() {
             render={({ field }) => (
               <FormItem>
                 <FormControl>
-                  <Input
-                    {...field}
-                    type="text"
-                    placeholder="Nazwisko"
-                  />
+                  <Input {...field} type="text" placeholder="Nazwisko" />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -109,6 +118,8 @@ function SignUpPersonalForm() {
             )}
           />
         </div>
+
+        <SignUpDialog open={open} setOpen={setOpen} email={email} />
 
         <Button type="submit" className="w-full mt-5">
           Utwórz konto prywatne
