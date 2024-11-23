@@ -37,12 +37,14 @@ function SignUpPersonalForm() {
   const onSubmit = (values: z.infer<typeof signUpPersonalSchema>) => {
     axios
       .post("http://localhost:5000/auth/basic/signup/personal", values)
-      .catch((error) => {
-        // console.log(error.response.status);
-        if (error.response.status === 201) {
+      .then((response) => {
+        console.log(response);
+        if (response.status === 201) {
           setOpen(true);
           setEmail(values.email);
         }
+      })
+      .catch((error) => {
         if (error.response.status === 403) {
           toast({
             variant: "destructive",
@@ -51,7 +53,6 @@ function SignUpPersonalForm() {
           });
         }
       });
-
     // console.log(values);
   };
 

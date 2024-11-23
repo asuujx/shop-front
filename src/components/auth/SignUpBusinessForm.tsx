@@ -6,7 +6,13 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "../ui/button";
-import { Form, FormControl, FormField, FormItem, FormMessage } from "../ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "../ui/form";
 import { Input } from "../ui/input";
 import { Separator } from "../ui/separator";
 import SignUpDialog from "./SignUpDialog";
@@ -17,25 +23,6 @@ export default function SignUpBusinessForm() {
   const [email, setEmail] = useState("");
 
   const { toast } = useToast();
-
-  const onSubmit = (values: z.infer<typeof signUpBusinessSchema>) => {
-    axios.post("http://localhost:5000/auth/basic/signup/business", values).catch((error) => {
-      // console.log(error.response.status);
-      if (error.response.status === 201) {
-        setOpen(true);
-        setEmail(values.email);
-      }
-      if (error.response.status === 403) {
-        toast({
-          variant: "destructive",
-          title: "Wystąpił błąd",
-          description: "Adres e-mail lub NIP jest już zajęty.",
-        });
-      }
-    });
-
-    // console.log(values);
-  }
 
   const form = useForm<z.infer<typeof signUpBusinessSchema>>({
     resolver: zodResolver(signUpBusinessSchema),
@@ -54,6 +41,28 @@ export default function SignUpBusinessForm() {
       companyCity: "",
     },
   });
+
+  const onSubmit = (values: z.infer<typeof signUpBusinessSchema>) => {
+    axios
+      .post("http://localhost:5000/auth/basic/signup/business", values)
+      .then((response) => {
+        // console.log(response);
+        if (response.status === 201) {
+          setOpen(true);
+          setEmail(values.email);
+        }
+      })
+      .catch((error) => {
+        if (error.response.status === 403) {
+          toast({
+            variant: "destructive",
+            title: "Wystąpił błąd",
+            description: "Adres e-mail lub NIP jest już zajęty.",
+          });
+        }
+      });
+    // console.log(values);
+  };
 
   return (
     <Form {...form}>
