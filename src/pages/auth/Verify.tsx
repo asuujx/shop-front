@@ -5,30 +5,28 @@ import {
   CardFooter,
   CardHeader,
 } from "@/components/ui/card";
+import { toast } from "@/hooks/use-toast";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 
 function Verify() {
   const [searchParams] = useSearchParams();
   const token = searchParams.get("token");
-  const [status, setStatus] = useState("");
 
   useEffect(() => {
     if (token) {
       axios
         .post("http://localhost:5000/auth/basic/verify", { token })
-        .then((response) => {
-          setStatus(response.data.status);
-        })
-        .catch((error) => {
-          setStatus(error.response.status);
+        .catch(() => {
+          toast({
+            variant: "destructive",
+            title: "Błąd",
+            description: "Niewłaściwy token weryfikacyjny.",
+          })
         });
     }
   }), [token];
-
-  console.log(status);
-  console.log(token);
 
   return (
     <div className="w-screen h-screen flex items-center justify-center">
@@ -50,5 +48,3 @@ function Verify() {
 }
 
 export default Verify;
-
-// http://localhost:3000/verify?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImJhbG9uLnBpb3RyQGdtYWlsLmNvbSIsImlhdCI6MTczMjA0ODAyOSwiZXhwIjoxNzMyMTM0NDI5fQ.FX_WkAfcsHr7p7KlwjbtQ244ERNBC-LAcZoaDbQZr_8

@@ -4,16 +4,25 @@ import {
   FormControl,
   FormField,
   FormItem,
-  FormMessage
+  FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import axiosInstance from "@/lib/axios-instance";
 import { loginSchema } from "@/lib/schemas/loginSchema";
+import { useUser } from "@/providers/userProvider";
 import { zodResolver } from "@hookform/resolvers/zod";
+import axios from "axios";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 import { z } from "zod";
+import VerifyMailDialog from "./VerifyMailDialog";
 
 function LoginForm() {
+  const { login } = useUser();
+  const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
+  const [email, setEmail] = useState("");
+
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -23,25 +32,32 @@ function LoginForm() {
   });
 
   const onSubmit = async (values: z.infer<typeof loginSchema>) => {
-    try {
-      const response = await axiosInstance.post("/auth/basic/signin", values);
-      const { accessToken } = response.data;
-      localStorage.setItem("accessToken", JSON.stringify(accessToken));
-
-      // console.log("Login successful", values);
-      // console.log(accessToken);
-    } catch (error) {
-      console.error("Login failed", error);
-      form.setError("password", {
-        type: "manual",
-        message: "Nieprawidłowy adres e-mail lub hasło",
+    axios
+      .post("http://localhost:5000/auth/basic/signin", values, { withCredentials: true })
+      .then((response) => {
+        if (response.data.emailVerified) {
+          login({ firstName: response.data.firstName, lastName: response.data.lastName });
+          localStorage.setItem("accessToken", response.data.accessToken);
+          navigate("/");
+        } else {
+          setEmail(values.email);
+          setOpen(true);
+        }
       })
-    }
+      .catch(() => {
+        form.setError("password", {
+          type: "manual",
+          message: "Nieprawidłowy adres e-mail lub hasło",
+        });
+      });
   };
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="w-full flex flex-col gap-5">
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="w-full flex flex-col gap-5"
+      >
         <FormField
           name="email"
           render={({ field }) => (
@@ -67,6 +83,8 @@ function LoginForm() {
         <Button type="submit" className="w-full mt-5">
           Zaloguj
         </Button>
+
+        {open && <VerifyMailDialog open={open} setOpen={setOpen} email={email} />}
       </form>
     </Form>
   );
