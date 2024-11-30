@@ -2,6 +2,7 @@ import { useToast } from "@/hooks/use-toast";
 import { signUpBusinessSchema } from "@/lib/schemas/signUpBusinessSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
+import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -21,6 +22,7 @@ export default function SignUpBusinessForm() {
   // Change state of the dialog
   const [open, setOpen] = useState(false);
   const [email, setEmail] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   const { toast } = useToast();
 
@@ -62,6 +64,10 @@ export default function SignUpBusinessForm() {
         }
       });
     // console.log(values);
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
   };
 
   return (
@@ -114,7 +120,19 @@ export default function SignUpBusinessForm() {
             render={({ field }) => (
               <FormItem>
                 <FormControl>
-                  <Input {...field} type="password" placeholder="Hasło" />
+                  <div className="relative">
+                    <Input
+                      {...field}
+                      type={showPassword ? "text" : "password"}
+                      placeholder="Hasło"
+                    />
+                    <span
+                      onClick={togglePasswordVisibility}
+                      className="absolute right-2 top-1/2 transform -translate-y-1/2 cursor-pointer"
+                    >
+                      {showPassword ? <EyeOff /> : <Eye />}
+                    </span>
+                  </div>
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -127,7 +145,7 @@ export default function SignUpBusinessForm() {
                 <FormControl>
                   <Input
                     {...field}
-                    type="password"
+                    type={showPassword ? "text" : "password"}
                     placeholder="Powtórz hasło"
                   />
                 </FormControl>

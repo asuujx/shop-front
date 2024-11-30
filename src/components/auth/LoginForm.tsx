@@ -11,6 +11,7 @@ import { loginSchema } from "@/lib/schemas/loginSchema";
 import { useUser } from "@/providers/userProvider";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
+import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
@@ -22,6 +23,7 @@ function LoginForm() {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [email, setEmail] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
@@ -52,6 +54,10 @@ function LoginForm() {
       });
   };
 
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
   return (
     <Form {...form}>
       <form
@@ -73,7 +79,19 @@ function LoginForm() {
           render={({ field }) => (
             <FormItem>
               <FormControl>
-                <Input {...field} type="password" placeholder="Hasło" />
+                <div className="relative">
+                  <Input
+                    {...field}
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Hasło"
+                  />
+                  <span
+                    onClick={togglePasswordVisibility}
+                    className="absolute right-2 top-1/2 transform -translate-y-1/2 cursor-pointer"
+                  >
+                    {showPassword ? <EyeOff /> : <Eye />}
+                  </span>
+                </div>
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -84,7 +102,9 @@ function LoginForm() {
           Zaloguj
         </Button>
 
-        {open && <VerifyMailDialog open={open} setOpen={setOpen} email={email} />}
+        {open && (
+          <VerifyMailDialog open={open} setOpen={setOpen} email={email} />
+        )}
       </form>
     </Form>
   );
