@@ -16,11 +16,13 @@ import {
 } from "../ui/form";
 import { Input } from "../ui/input";
 import SignUpDialog from "./SignUpDialog";
+import StrongPasswordInformation from "./StrongPasswordInformation";
 
 function SignUpPersonalForm() {
   // Change state of the dialog
   const [open, setOpen] = useState(false);
   const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
   const { toast } = useToast();
@@ -117,6 +119,11 @@ function SignUpPersonalForm() {
                       {...field}
                       type={showPassword ? "text" : "password"}
                       placeholder="Hasło"
+                      onChange={(e) => {
+                        field.onChange(e);
+                        setPassword(e.target.value)
+                      }
+                      }
                     />
                     <span
                       onClick={togglePasswordVisibility}
@@ -148,9 +155,11 @@ function SignUpPersonalForm() {
           />
         </div>
 
+        <StrongPasswordInformation password={password} />
+
         <SignUpDialog open={open} setOpen={setOpen} email={email} />
 
-        <Button type="submit" className="w-full mt-5">
+        <Button type="submit" className="w-full">
           Utwórz konto prywatne
         </Button>
       </form>

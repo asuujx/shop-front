@@ -17,11 +17,13 @@ import {
 import { Input } from "../ui/input";
 import { Separator } from "../ui/separator";
 import SignUpDialog from "./SignUpDialog";
+import StrongPasswordInformation from "./StrongPasswordInformation";
 
 export default function SignUpBusinessForm() {
   // Change state of the dialog
   const [open, setOpen] = useState(false);
   const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
   const { toast } = useToast();
@@ -125,6 +127,10 @@ export default function SignUpBusinessForm() {
                       {...field}
                       type={showPassword ? "text" : "password"}
                       placeholder="Hasło"
+                      onChange={(e) => {
+                        field.onChange(e);
+                        setPassword(e.target.value);
+                      }}
                     />
                     <span
                       onClick={togglePasswordVisibility}
@@ -154,6 +160,8 @@ export default function SignUpBusinessForm() {
             )}
           />
         </div>
+
+        <StrongPasswordInformation password={password} />
 
         <div className=" flex gap-5 items-center justify-center">
           <Separator decorative className="w-1/3" />
