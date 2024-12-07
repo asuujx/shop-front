@@ -1,5 +1,5 @@
 import Header from "@/components/header/Header";
-import AddressCard from "@/components/user/AddressCard";
+import AddressCard from "@/components/user/addresses/AddressesCard";
 import ChangePasswordCard from "@/components/user/ChangePasswordCard";
 import UserCard from "@/components/user/UserCard";
 
