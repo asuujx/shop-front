@@ -45,8 +45,6 @@ function AddressesCard() {
       });
   };
 
-  
-
   return (
     <Card>
       <CardHeader>

@@ -46,7 +46,7 @@ function AddressCard({ address, handleAddressDelete }: AddressCardProps) {
         </p>
         <p>{address.phoneNumber}</p>
       </CardContent>
-      <CardFooter className="flex gap-5">
+      <CardFooter className="flex flex-wrap gap-5">
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
             <Button variant="outline">Edytuj</Button>
