@@ -1,7 +1,7 @@
 import { useUser } from "@/providers/userProvider";
 import { LogOut, Moon, ShoppingBag, Sun, User } from "lucide-react";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,7 +18,13 @@ interface UserDropdownProps {
 function UserDropdown({ firstName, lastName }: UserDropdownProps) {
   const user = `${firstName} ${lastName}`;
   const [toggleTheme, setToggleTheme] = useState("light");
+  const navigate = useNavigate();
   const { logout } = useUser();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/");
+  }
 
   return (
     <DropdownMenu>
@@ -48,7 +54,7 @@ function UserDropdown({ firstName, lastName }: UserDropdownProps) {
           )}
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={logout}>
+        <DropdownMenuItem onClick={handleLogout}>
           <LogOut />
           <span>Wyloguj</span>
         </DropdownMenuItem>

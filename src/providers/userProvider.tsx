@@ -1,3 +1,4 @@
+import axiosInstance from "@/lib/axios-instance";
 import { createContext, useContext, useState } from "react";
 
 interface User {
@@ -9,7 +10,7 @@ interface UserContextProps {
   user: User | null;
   login: (user: User) => void;
   logout: () => void;
-};
+}
 
 interface UserProviderProps {
   children: React.ReactNode;
@@ -25,14 +26,21 @@ export const UserProvider = ({ children }: UserProviderProps) => {
   };
 
   const logout = () => {
-    setUser(null);
+    axiosInstance
+      .post("/auth/basic/signout", "", { withCredentials: true })
+      .then((response) => {
+        if (response.status === 204) {
+          localStorage.removeItem("accessToken");
+          setUser(null);
+        }
+      });
   };
 
   return (
     <UserContext.Provider value={{ user, login, logout }}>
       {children}
     </UserContext.Provider>
-  )
+  );
 };
 
 export const useUser = () => {
