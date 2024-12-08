@@ -42,10 +42,10 @@ function AddressForm({ setOpen }: AddressFormProps) {
       .post("/delivery-addresses", values)
       .then((response) => {
         if (response.status === 201) {
+          setOpen(false);
           toast({
             title: "Adres został dodany",
           });
-          setOpen(false);
         }
       })
       .catch((error) => {

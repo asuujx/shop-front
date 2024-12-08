@@ -3,6 +3,7 @@ import axiosInstance from "@/lib/axios-instance";
 import { addressSchema } from "@/lib/schemas/addressSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SelectValue } from "@radix-ui/react-select";
+import { useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { address } from "../../../../types";
@@ -29,6 +30,8 @@ interface AddressEditFormProps {
 }
 
 function AddressEditForm({ id, data, setOpen }: AddressEditFormProps) {
+  const queryClient = useQueryClient();
+
   const form = useForm<z.infer<typeof addressSchema>>({
     resolver: zodResolver(addressSchema),
     defaultValues: {
@@ -50,6 +53,8 @@ function AddressEditForm({ id, data, setOpen }: AddressEditFormProps) {
       .patch(`/delivery-addresses/${id}`, values)
       .then((response) => {
         if (response.status === 200) {
+          setOpen(false);
+          queryClient.invalidateQueries({ queryKey: ["addresses"] });
           toast({
             title: "Adres został zaktualizowany",
           });

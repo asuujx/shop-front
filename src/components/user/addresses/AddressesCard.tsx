@@ -1,6 +1,7 @@
 import { toast } from "@/hooks/use-toast";
 import axiosInstance from "@/lib/axios-instance";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { Plus } from "lucide-react";
 import { useState } from "react";
 import { address } from "../../../../types";
 import { Button } from "../../ui/button";
@@ -23,6 +24,7 @@ const fetchAddresses = async () => {
 };
 
 function AddressesCard() {
+  const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
 
   const { data: addresses } = useQuery({
@@ -35,6 +37,7 @@ function AddressesCard() {
       .delete(`http://localhost:5000/delivery-addresses/${id}`)
       .then((response) => {
         if (response.status === 204) {
+          queryClient.invalidateQueries({ queryKey: ["addresses"] });
           toast({
             title: "Adres został usunięty",
           });
@@ -42,21 +45,20 @@ function AddressesCard() {
       });
   };
 
+  
+
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Adres wysyłki</CardTitle>
+        <CardTitle>Adresy wysyłki</CardTitle>
       </CardHeader>
-      <CardContent className="flex flex-wrap gap-2 items-center">
-        {addresses && addresses.length > 0 ? (
-          addresses.map((address: address) => (
-            <AddressCard key={address.id} address={address} handleAddressDelete={handleAddressDelete} />
-          ))
-        ) : <></>}
-
+      <CardContent className="grid grid-cols-3 gap-2">
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
-            <Button>Dodaj adres</Button>
+            <Button variant="outline" className="flex flex-col h-full">
+              <Plus />
+              <p>Dodaj adres</p>
+            </Button>
           </DialogTrigger>
           <DialogContent
             onInteractOutside={(e) => {
@@ -69,6 +71,18 @@ function AddressesCard() {
             <AddressForm setOpen={setOpen} />
           </DialogContent>
         </Dialog>
+
+        {addresses && addresses.length > 0 ? (
+          addresses.map((address: address) => (
+            <AddressCard
+              key={address.id}
+              address={address}
+              handleAddressDelete={handleAddressDelete}
+            />
+          ))
+        ) : (
+          <></>
+        )}
       </CardContent>
     </Card>
   );

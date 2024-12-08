@@ -1,6 +1,18 @@
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { DialogTrigger } from "@radix-ui/react-dialog";
 import { useState } from "react";
 import { address } from "../../../../types";
@@ -11,29 +23,27 @@ interface AddressCardProps {
   handleAddressDelete: (id: number) => void;
 }
 
-function AddressCard({
-  address,
-  handleAddressDelete,
-}: AddressCardProps) {
+function AddressCard({ address, handleAddressDelete }: AddressCardProps) {
   const [open, setOpen] = useState(false);
 
   return (
-    <Card>
-      <CardContent className="flex flex-col">
-        <p>
+    <Card className="">
+      <CardHeader>
+        <CardTitle className="text-xl">
           {address.firstName} {address.lastName}
+        </CardTitle>
+        <CardDescription>
+          {address.companyName && <p>{address.companyName}</p>}
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="flex flex-col">
+        <p className="flex">
+          {address.street} {address.building}
+          {address.apartment ? <p>/{address.apartment}</p> : null}
         </p>
-
-        {address.companyName && <p>{address.companyName}</p>}
-
-        <p>
-          {address.street} {address.building} {address.apartment}
-        </p>
-
         <p>
           {address.postalCode} {address.city}
         </p>
-
         <p>{address.phoneNumber}</p>
       </CardContent>
       <CardFooter className="flex gap-5">
@@ -52,7 +62,12 @@ function AddressCard({
             <AddressEditForm setOpen={setOpen} id={address.id} data={address} />
           </DialogContent>
         </Dialog>
-        <Button variant="destructive" onClick={() => handleAddressDelete(address.id)}>Usuń</Button>
+        <Button
+          variant="destructive"
+          onClick={() => handleAddressDelete(address.id)}
+        >
+          Usuń
+        </Button>
       </CardFooter>
     </Card>
   );

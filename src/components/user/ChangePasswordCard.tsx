@@ -60,51 +60,53 @@ function ChangePasswordCard() {
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="w-fit flex flex-col gap-4"
+            className="flex gap-5"
           >
-            <FormField
-              name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <div className="relative">
+            <div className="w-1/3 flex flex-col gap-4">
+              <FormField
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <div className="relative">
+                        <Input
+                          {...field}
+                          type={showPassword ? "text" : "password"}
+                          placeholder="Nowe hasło"
+                          onChange={(e) => {
+                            field.onChange(e);
+                            setPassword(e.target.value);
+                          }}
+                        />
+                        <span
+                          onClick={togglePasswordVisibility}
+                          className="absolute right-2 top-1/2 transform -translate-y-1/2 cursor-pointer"
+                        >
+                          {showPassword ? <EyeOff /> : <Eye />}
+                        </span>
+                      </div>
+                    </FormControl>
+                  </FormItem>
+                )}
+              ></FormField>
+
+              <FormField
+                name="repeatPassword"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
                       <Input
                         {...field}
                         type={showPassword ? "text" : "password"}
-                        placeholder="Nowe hasło"
-                        onChange={(e) => {
-                          field.onChange(e);
-                          setPassword(e.target.value);
-                        }}
+                        placeholder="Powtórz hasło"
                       />
-                      <span
-                        onClick={togglePasswordVisibility}
-                        className="absolute right-2 top-1/2 transform -translate-y-1/2 cursor-pointer"
-                      >
-                        {showPassword ? <EyeOff /> : <Eye />}
-                      </span>
-                    </div>
-                  </FormControl>
-                </FormItem>
-              )}
-            ></FormField>
+                    </FormControl>
+                  </FormItem>
+                )}
+              ></FormField>
 
-            <FormField
-              name="repeatPassword"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      type={showPassword ? "text" : "password"}
-                      placeholder="Powtórz hasło"
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            ></FormField>
-
-            <Button type="submit">Zmień hasło</Button>
+              <Button type="submit">Zmień hasło</Button>
+            </div>
 
             <StrongPasswordInformation password={password} />
           </form>
