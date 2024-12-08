@@ -3,8 +3,8 @@ import {
   DialogContent,
   DialogDescription,
   DialogHeader,
-  DialogTitle
-} from "../ui/dialog";
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 type SignUpDialogProps = {
   open: boolean;

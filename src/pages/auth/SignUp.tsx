@@ -1,5 +1,6 @@
-import SignUpBusinessForm from "@/components/auth/SignUpBusinessForm";
-import SignUpPersonalForm from "@/components/auth/SignUpPersonalForm";
+
+import SignUpBusinessForm from "@/components/auth/signup/SignUpBusinessForm";
+import SignUpPersonalForm from "@/components/auth/signup/SignUpPersonalForm";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Link } from "react-router-dom";
 

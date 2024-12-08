@@ -6,7 +6,7 @@ import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import StrongPasswordInformation from "../auth/StrongPasswordInformation";
+import StrongPasswordInformation from "../auth/password/StrongPasswordInformation";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Form, FormControl, FormField, FormItem } from "../ui/form";

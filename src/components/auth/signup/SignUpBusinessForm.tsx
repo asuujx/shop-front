@@ -1,3 +1,13 @@
+import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import { signUpBusinessSchema } from "@/lib/schemas/signUpBusinessSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -6,18 +16,8 @@ import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { Button } from "../ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormMessage,
-} from "../ui/form";
-import { Input } from "../ui/input";
-import { Separator } from "../ui/separator";
+import StrongPasswordInformation from "../password/StrongPasswordInformation";
 import SignUpDialog from "./SignUpDialog";
-import StrongPasswordInformation from "./StrongPasswordInformation";
 
 export default function SignUpBusinessForm() {
   // Change state of the dialog

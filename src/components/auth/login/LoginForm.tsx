@@ -16,7 +16,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod";
-import VerifyMailDialog from "./VerifyMailDialog";
+import VerifyMailDialog from "../VerifyMailDialog";
 
 function LoginForm() {
   const { login } = useUser();
@@ -35,10 +35,15 @@ function LoginForm() {
 
   const onSubmit = async (values: z.infer<typeof loginSchema>) => {
     axios
-      .post("http://localhost:5000/auth/basic/signin", values, { withCredentials: true })
+      .post("http://localhost:5000/auth/basic/signin", values, {
+        withCredentials: true,
+      })
       .then((response) => {
         if (response.data.emailVerified) {
-          login({ firstName: response.data.firstName, lastName: response.data.lastName });
+          login({
+            firstName: response.data.firstName,
+            lastName: response.data.lastName,
+          });
           localStorage.setItem("accessToken", response.data.accessToken);
           navigate("/");
         } else {
@@ -98,7 +103,7 @@ function LoginForm() {
           )}
         />
 
-        <Button type="submit" className="w-full mt-5">
+        <Button type="submit" className="w-full">
           Zaloguj
         </Button>
 
