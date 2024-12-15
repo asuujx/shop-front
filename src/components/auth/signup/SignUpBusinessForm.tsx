@@ -4,14 +4,15 @@ import {
   FormControl,
   FormField,
   FormItem,
+  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
+import axiosInstance from "@/lib/axios-instance";
 import { signUpBusinessSchema } from "@/lib/schemas/signUpBusinessSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import axios from "axios";
 import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -20,7 +21,6 @@ import StrongPasswordInformation from "../password/StrongPasswordInformation";
 import SignUpDialog from "./SignUpDialog";
 
 export default function SignUpBusinessForm() {
-  // Change state of the dialog
   const [open, setOpen] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -47,10 +47,9 @@ export default function SignUpBusinessForm() {
   });
 
   const onSubmit = (values: z.infer<typeof signUpBusinessSchema>) => {
-    axios
-      .post("http://localhost:5000/auth/basic/signup/business", values)
+    axiosInstance
+      .post("/auth/basic/signup/business", values)
       .then((response) => {
-        // console.log(response);
         if (response.status === 201) {
           setOpen(true);
           setEmail(values.email);
@@ -65,7 +64,6 @@ export default function SignUpBusinessForm() {
           });
         }
       });
-    // console.log(values);
   };
 
   const togglePasswordVisibility = () => {
@@ -76,15 +74,16 @@ export default function SignUpBusinessForm() {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="flex flex-col gap-5 w-full"
+        className="w-full max-w-lg flex flex-col gap-5"
       >
-        <div className="flex justify-between gap-5">
+        <div className="flex justify-between gap-2">
           <FormField
             name="firstName"
             render={({ field }) => (
               <FormItem>
+                <FormLabel>Imię</FormLabel>
                 <FormControl>
-                  <Input {...field} type="text" placeholder="Imię" />
+                  <Input {...field} type="text" placeholder="Jan" />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -95,8 +94,9 @@ export default function SignUpBusinessForm() {
             name="lastName"
             render={({ field }) => (
               <FormItem>
+                <FormLabel>Nazwisko</FormLabel>
                 <FormControl>
-                  <Input {...field} type="text" placeholder="Nazwisko" />
+                  <Input {...field} type="text" placeholder="Kowalski" />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -108,25 +108,26 @@ export default function SignUpBusinessForm() {
           name="email"
           render={({ field }) => (
             <FormItem>
+              <FormLabel>Adres e-mail</FormLabel>
               <FormControl>
-                <Input {...field} type="email" placeholder="Adres e-mail" />
+                <Input {...field} type="email" placeholder="np. jan.kowalski@poczta.pl" />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
 
-        <div className="w-full flex justify-between gap-5">
+        <div className="w-full flex justify-between gap-2">
           <FormField
             name="password"
             render={({ field }) => (
               <FormItem>
+                <FormLabel>Hasło</FormLabel>
                 <FormControl>
                   <div className="relative">
                     <Input
                       {...field}
                       type={showPassword ? "text" : "password"}
-                      placeholder="Hasło"
                       onChange={(e) => {
                         field.onChange(e);
                         setPassword(e.target.value);
@@ -148,11 +149,11 @@ export default function SignUpBusinessForm() {
             name="repeatPassword"
             render={({ field }) => (
               <FormItem>
+                <FormLabel>Powtórz hasło</FormLabel>
                 <FormControl>
                   <Input
                     {...field}
                     type={showPassword ? "text" : "password"}
-                    placeholder="Powtórz hasło"
                   />
                 </FormControl>
                 <FormMessage />
@@ -175,6 +176,7 @@ export default function SignUpBusinessForm() {
           name="companyName"
           render={({ field }) => (
             <FormItem>
+              <FormLabel>Nazwa</FormLabel>
               <FormControl>
                 <Input {...field} type="text" placeholder="Nazwa" />
               </FormControl>
@@ -187,6 +189,7 @@ export default function SignUpBusinessForm() {
           name="companyNip"
           render={({ field }) => (
             <FormItem>
+              <FormLabel>NIP</FormLabel>
               <FormControl>
                 <Input {...field} type="text" placeholder="Numer NIP" />
               </FormControl>
@@ -199,6 +202,7 @@ export default function SignUpBusinessForm() {
           name="companyStreet"
           render={({ field }) => (
             <FormItem>
+              <FormLabel>Ulica</FormLabel>
               <FormControl>
                 <Input {...field} type="text" placeholder="Ulica" />
               </FormControl>
@@ -207,11 +211,12 @@ export default function SignUpBusinessForm() {
           )}
         />
 
-        <div className="w-full flex justify-between gap-5">
+        <div className="w-full flex justify-between gap-2">
           <FormField
             name="companyBuilding"
             render={({ field }) => (
               <FormItem>
+                <FormLabel>Nr. budynku</FormLabel>
                 <FormControl>
                   <Input {...field} type="text" placeholder="Nr. budynku" />
                 </FormControl>
@@ -224,12 +229,15 @@ export default function SignUpBusinessForm() {
             name="companyApartment"
             render={({ field }) => (
               <FormItem>
+                <FormLabel>Nr. lokalu (opcjonalne)</FormLabel>
                 <FormControl>
-                  <Input
-                    {...field}
-                    type="text"
-                    placeholder="Nr. lokalu (Opcjonalne)"
-                  />
+                  <div>
+                    <Input
+                      {...field}
+                      type="text"
+                      placeholder="Nr. lokalu"
+                    />
+                  </div>
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -241,6 +249,7 @@ export default function SignUpBusinessForm() {
           name="companyPostalCode"
           render={({ field }) => (
             <FormItem>
+              <FormLabel>Kod pocztowy</FormLabel>
               <FormControl>
                 <Input {...field} type="text" placeholder="Kod pocztowy" />
               </FormControl>
@@ -253,6 +262,7 @@ export default function SignUpBusinessForm() {
           name="companyCity"
           render={({ field }) => (
             <FormItem>
+              <FormLabel>Miasto</FormLabel>
               <FormControl>
                 <Input {...field} type="text" placeholder="Miasto" />
               </FormControl>

@@ -1,10 +1,11 @@
 import Header from "@/components/header/Header";
+import { Outlet } from "react-router-dom";
 
 function App() {
   return (
-    <div className="flex items-center justify-center gap-2">
+    <div className="flex flex-col">
       <Header />
-      
+      <Outlet />
     </div>
   );
 }

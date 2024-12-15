@@ -3,7 +3,7 @@ import axiosInstance from "@/lib/axios-instance";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Plus } from "lucide-react";
 import { useState } from "react";
-import { address } from "../../../../types";
+import { Address } from "../../../../types";
 import { Button } from "../../ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../../ui/card";
 import {
@@ -17,9 +17,7 @@ import AddressCard from "./AddressCard";
 import AddressForm from "./AddressForm";
 
 const fetchAddresses = async () => {
-  const response = await axiosInstance.get(
-    "http://localhost:5000/delivery-addresses"
-  );
+  const response = await axiosInstance.get("/delivery-addresses");
   return response.data;
 };
 
@@ -33,16 +31,14 @@ function AddressesCard() {
   });
 
   const handleAddressDelete = (id: number) => {
-    axiosInstance
-      .delete(`http://localhost:5000/delivery-addresses/${id}`)
-      .then((response) => {
-        if (response.status === 204) {
-          queryClient.invalidateQueries({ queryKey: ["addresses"] });
-          toast({
-            title: "Adres został usunięty",
-          });
-        }
-      });
+    axiosInstance.delete(`/delivery-addresses/${id}`).then((response) => {
+      if (response.status === 204) {
+        queryClient.invalidateQueries({ queryKey: ["addresses"] });
+        toast({
+          title: "Adres został usunięty",
+        });
+      }
+    });
   };
 
   return (
@@ -50,7 +46,7 @@ function AddressesCard() {
       <CardHeader>
         <CardTitle>Adresy wysyłki</CardTitle>
       </CardHeader>
-      <CardContent className="grid grid-cols-3 gap-2">
+      <CardContent className="grid grid-cols-1 lg:grid-cols-3 gap-2">
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
             <Button variant="outline" className="flex flex-col h-full">
@@ -71,7 +67,7 @@ function AddressesCard() {
         </Dialog>
 
         {addresses && addresses.length > 0 ? (
-          addresses.map((address: address) => (
+          addresses.map((address: Address) => (
             <AddressCard
               key={address.id}
               address={address}

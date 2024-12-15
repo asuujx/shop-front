@@ -1,4 +1,4 @@
-import axios from "axios";
+import axiosInstance from "@/lib/axios-instance";
 import { Button } from "../ui/button";
 import {
   Dialog,
@@ -34,10 +34,9 @@ function VerifyMailDialog({ open, setOpen, email }: VerifyMailDialogProps) {
         <DialogFooter>
           <Button
             onClick={() => {
-              axios.post(
-                "http://localhost:5000/auth/basic/resend-verification-email",
-                { email }
-              );
+              axiosInstance.post("/auth/basic/resend-verification-email", {
+                email,
+              });
               setOpen(false);
             }}
             className="w-full mt-2"

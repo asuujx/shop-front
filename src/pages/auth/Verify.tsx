@@ -6,7 +6,7 @@ import {
   CardHeader,
 } from "@/components/ui/card";
 import { toast } from "@/hooks/use-toast";
-import axios from "axios";
+import axiosInstance from "@/lib/axios-instance";
 import { useEffect } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 
@@ -16,17 +16,16 @@ function Verify() {
 
   useEffect(() => {
     if (token) {
-      axios
-        .post("http://localhost:5000/auth/basic/verify", { token })
-        .catch(() => {
-          toast({
-            variant: "destructive",
-            title: "Błąd",
-            description: "Niewłaściwy token weryfikacyjny.",
-          })
+      axiosInstance.post("/auth/basic/verify", { token }).catch(() => {
+        toast({
+          variant: "destructive",
+          title: "Błąd",
+          description: "Niewłaściwy token weryfikacyjny.",
         });
+      });
     }
-  }), [token];
+  }),
+    [token];
 
   return (
     <div className="w-screen h-screen flex items-center justify-center">

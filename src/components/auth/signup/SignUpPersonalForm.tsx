@@ -1,7 +1,7 @@
 import { useToast } from "@/hooks/use-toast";
+import axiosInstance from "@/lib/axios-instance";
 import { signUpPersonalSchema } from "@/lib/schemas/signUpPersonalSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import axios from "axios";
 import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -12,6 +12,7 @@ import {
   FormControl,
   FormField,
   FormItem,
+  FormLabel,
   FormMessage,
 } from "../../ui/form";
 import { Input } from "../../ui/input";
@@ -19,7 +20,6 @@ import StrongPasswordInformation from "../password/StrongPasswordInformation";
 import SignUpDialog from "./SignUpDialog";
 
 function SignUpPersonalForm() {
-  // Change state of the dialog
   const [open, setOpen] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -39,8 +39,8 @@ function SignUpPersonalForm() {
   });
 
   const onSubmit = (values: z.infer<typeof signUpPersonalSchema>) => {
-    axios
-      .post("http://localhost:5000/auth/basic/signup/personal", values)
+    axiosInstance
+      .post("/auth/basic/signup/personal", values)
       .then((response) => {
         console.log(response);
         if (response.status === 201) {
@@ -57,7 +57,6 @@ function SignUpPersonalForm() {
           });
         }
       });
-    // console.log(values);
   };
 
   const togglePasswordVisibility = () => {
@@ -68,15 +67,16 @@ function SignUpPersonalForm() {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="flex flex-col gap-5"
+        className="w-full max-w-lg flex flex-col gap-5"
       >
-        <div className="flex justify-between">
+        <div className="flex justify-between gap-2">
           <FormField
             name="firstName"
             render={({ field }) => (
               <FormItem>
+                <FormLabel>Imię</FormLabel>
                 <FormControl>
-                  <Input {...field} type="text" placeholder="Imię" />
+                  <Input {...field} type="text" placeholder="Jan" />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -87,8 +87,9 @@ function SignUpPersonalForm() {
             name="lastName"
             render={({ field }) => (
               <FormItem>
+                <FormLabel>Nazwisko</FormLabel>
                 <FormControl>
-                  <Input {...field} type="text" placeholder="Nazwisko" />
+                  <Input {...field} type="text" placeholder="Kowalski" />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -100,25 +101,26 @@ function SignUpPersonalForm() {
           name="email"
           render={({ field }) => (
             <FormItem>
+              <FormLabel>Adres e-mail</FormLabel>
               <FormControl>
-                <Input {...field} type="email" placeholder="Adres e-mail" />
+                <Input {...field} type="email" placeholder="np. jan.kowalski@poczta.pl" />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
 
-        <div className="w-full flex justify-between gap-5">
+        <div className="w-full flex justify-between gap-2">
           <FormField
             name="password"
             render={({ field }) => (
               <FormItem className="w-1/2">
+                <FormLabel>Hasło</FormLabel>
                 <FormControl>
                   <div className="relative">
                     <Input
                       {...field}
                       type={showPassword ? "text" : "password"}
-                      placeholder="Hasło"
                       onChange={(e) => {
                         field.onChange(e);
                         setPassword(e.target.value)
@@ -142,11 +144,11 @@ function SignUpPersonalForm() {
             name="repeatPassword"
             render={({ field }) => (
               <FormItem className="w-1/2">
+                <FormLabel>Powtórz hasło</FormLabel>
                 <FormControl>
                   <Input
                     {...field}
                     type={showPassword ? "text" : "password"}
-                    placeholder="Powtórz hasło"
                   />
                 </FormControl>
                 <FormMessage />

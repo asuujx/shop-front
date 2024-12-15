@@ -1,7 +1,3 @@
-import { useTheme } from "@/providers/themeProvider";
-import { useUser } from "@/providers/userProvider";
-import { Laptop, LogOut, Moon, Palette, ShoppingBag, Sun, User } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,7 +8,11 @@ import {
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
+} from "@/components/ui/dropdown-menu";
+import { useTheme } from "@/providers/themeProvider";
+import { useUser } from "@/providers/userProvider";
+import { Laptop, LogOut, Moon, Palette, ShoppingBag, Sun, User } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
 
 interface UserDropdownProps {
   firstName: string;

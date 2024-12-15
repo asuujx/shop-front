@@ -3,6 +3,7 @@ import axiosInstance from "@/lib/axios-instance";
 import { addressSchema } from "@/lib/schemas/addressSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SelectValue } from "@radix-ui/react-select";
+import { useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "../../ui/button";
@@ -21,6 +22,8 @@ interface AddressFormProps {
 }
 
 function AddressForm({ setOpen }: AddressFormProps) {
+  const queryClient = useQueryClient();
+  
   const form = useForm<z.infer<typeof addressSchema>>({
     resolver: zodResolver(addressSchema),
     defaultValues: {
@@ -43,6 +46,7 @@ function AddressForm({ setOpen }: AddressFormProps) {
       .then((response) => {
         if (response.status === 201) {
           setOpen(false);
+          queryClient.invalidateQueries({ queryKey: ["addresses"] });
           toast({
             title: "Adres został dodany",
           });

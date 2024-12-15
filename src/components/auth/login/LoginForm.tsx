@@ -4,24 +4,27 @@ import {
   FormControl,
   FormField,
   FormItem,
+  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import axiosInstance from "@/lib/axios-instance";
 import { loginSchema } from "@/lib/schemas/loginSchema";
 import { useUser } from "@/providers/userProvider";
 import { zodResolver } from "@hookform/resolvers/zod";
-import axios from "axios";
 import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { z } from "zod";
 import VerifyMailDialog from "../VerifyMailDialog";
+import EmailDialog from "./EmailDialog";
 
 function LoginForm() {
   const { login } = useUser();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
+  const [forgotPasswordDialog, setForgotPasswordDialog] = useState(false);
   const [email, setEmail] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
@@ -34,8 +37,8 @@ function LoginForm() {
   });
 
   const onSubmit = async (values: z.infer<typeof loginSchema>) => {
-    axios
-      .post("http://localhost:5000/auth/basic/signin", values, {
+    axiosInstance
+      .post("/auth/basic/signin", values, {
         withCredentials: true,
       })
       .then((response) => {
@@ -67,14 +70,15 @@ function LoginForm() {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="w-full flex flex-col gap-5"
+        className="w-full max-w-md flex flex-col gap-5"
       >
         <FormField
           name="email"
           render={({ field }) => (
             <FormItem>
+              <FormLabel>Adres E-mail</FormLabel>
               <FormControl>
-                <Input {...field} type="text" placeholder="Adres e-mail" />
+                <Input {...field} type="text" />
               </FormControl>
             </FormItem>
           )}
@@ -83,12 +87,12 @@ function LoginForm() {
           name="password"
           render={({ field }) => (
             <FormItem>
+              <FormLabel>Hasło</FormLabel>
               <FormControl>
                 <div className="relative">
                   <Input
                     {...field}
                     type={showPassword ? "text" : "password"}
-                    placeholder="Hasło"
                   />
                   <span
                     onClick={togglePasswordVisibility}
@@ -99,6 +103,10 @@ function LoginForm() {
                 </div>
               </FormControl>
               <FormMessage />
+              <EmailDialog
+                open={forgotPasswordDialog}
+                setOpen={setForgotPasswordDialog}
+              />
             </FormItem>
           )}
         />
@@ -106,6 +114,10 @@ function LoginForm() {
         <Button type="submit" className="w-full">
           Zaloguj
         </Button>
+
+        <Link to="/signup" className="text-center underline font-semibold">
+          Zarejestruj się
+        </Link>
 
         {open && (
           <VerifyMailDialog open={open} setOpen={setOpen} email={email} />

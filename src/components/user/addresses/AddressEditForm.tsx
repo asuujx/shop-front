@@ -6,7 +6,7 @@ import { SelectValue } from "@radix-ui/react-select";
 import { useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { address } from "../../../../types";
+import { Address } from "../../../../types";
 import { Button } from "../../ui/button";
 import {
   Form,
@@ -25,7 +25,7 @@ import {
 
 interface AddressEditFormProps {
   id: number;
-  data: address;
+  data: Address;
   setOpen: (open: boolean) => void;
 }
 

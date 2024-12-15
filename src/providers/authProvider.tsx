@@ -12,7 +12,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const { login, logout } = useUser();
   const refreshToken = () => {
     return axios
-      .post("http://localhost:5000/auth/refresh", null, {
+      .post(import.meta.env.VITE_API_BASE_URL + "/auth/refresh", null, {
         withCredentials: true,
       })
       .then((response) => {

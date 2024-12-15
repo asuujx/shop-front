@@ -1,28 +1,66 @@
-import { useUser } from "@/providers/userProvider";
-import { Link } from "react-router-dom";
+import { useMediaQuery } from "@uidotdev/usehooks";
+import { Menu } from "lucide-react";
+import { useState } from "react";
 import { Button } from "../ui/button";
-import UserDropdown from "./UserDropdown";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTrigger,
+} from "../ui/drawer";
+import AuthButtons from "./elements/AuthButtons";
+import Cart from "./elements/Cart";
+import Logo from "./elements/Logo";
+import NavMenu from "./elements/NavMenu";
+import SearchBar from "./elements/SearchBar";
 
 function Header() {
-  const { user } = useUser();
+  const [open, setOpen] = useState(false);
+  const isDesktop = useMediaQuery("(min-width: 1024px)");
+
+  if (isDesktop) {
+    return (
+      <div className="w-full top-0 px-5 py-2 border-b shadow-md">
+        <div className="max-w-screen-xl mx-auto flex items-center justify-between">
+          <Logo />
+
+          <div className="flex gap-5 items-center">
+            <NavMenu />
+            <SearchBar />
+          </div>
+
+          <div className="flex gap-5 items-center">
+            <Cart />
+            <AuthButtons />
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="w-full top-0 pt-2 px-5 flex justify-between">
-      <Link to="/" className="font-bold">
-        Placeholder
-      </Link>
-      {user ? (
-        <UserDropdown firstName={user.firstName} lastName={user.lastName} />
-      ) : (
-        <div className="flex gap-2">
-          <Button variant="outline">
-            <Link to="/login">Zaloguj</Link>
-          </Button>
-          <Button>
-            <Link to="/signup">Zarejestruj się</Link>
-          </Button>
-        </div>
-      )}
+    <div className="w-full top-0 px-5 py-2 border-b shadow-md">
+      <div className="max-w-screen-xl mx-auto flex items-center justify-between">
+        <Logo />
+
+        <Drawer open={open} onOpenChange={setOpen}>
+          <DrawerTrigger asChild>
+            <Button variant="outline">
+              <Menu />
+            </Button>
+          </DrawerTrigger>
+          <DrawerContent className="h-viewport flex flex-col gap-5 items-center">
+            <DrawerHeader>Menu</DrawerHeader>
+            <SearchBar />
+            <NavMenu />
+            <Cart />
+            <DrawerFooter>
+              <AuthButtons />
+            </DrawerFooter>
+          </DrawerContent>
+        </Drawer>
+      </div>
     </div>
   );
 }

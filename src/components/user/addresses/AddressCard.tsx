@@ -15,11 +15,11 @@ import {
 } from "@/components/ui/dialog";
 import { DialogTrigger } from "@radix-ui/react-dialog";
 import { useState } from "react";
-import { address } from "../../../../types";
+import { Address } from "../../../../types";
 import AddressEditForm from "./AddressEditForm";
 
 interface AddressCardProps {
-  address: address;
+  address: Address;
   handleAddressDelete: (id: number) => void;
 }
 
@@ -39,14 +39,14 @@ function AddressCard({ address, handleAddressDelete }: AddressCardProps) {
       <CardContent className="flex flex-col">
         <p className="flex">
           {address.street} {address.building}
-          {address.apartment ? <p>/{address.apartment}</p> : null}
+          {address.apartment ? `/${address.apartment}` : null}
         </p>
         <p>
           {address.postalCode} {address.city}
         </p>
         <p>{address.phoneNumber}</p>
       </CardContent>
-      <CardFooter className="flex flex-wrap gap-5">
+      <CardFooter className="flex flex-wrap gap-2">
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
             <Button variant="outline">Edytuj</Button>

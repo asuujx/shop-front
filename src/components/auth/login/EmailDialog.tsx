@@ -10,8 +10,8 @@ import {
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/hooks/use-toast";
+import axiosInstance from "@/lib/axios-instance";
 import { zodResolver } from "@hookform/resolvers/zod";
-import axios from "axios";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -34,8 +34,8 @@ function EmailDialog({ open, setOpen }: EmailDialogProps) {
 
   const onSubmit = async (values: z.infer<typeof emailSchema>) => {
     console.log(values);
-    axios
-      .post("http://localhost:5000/auth/basic/forgot-password", values)
+    axiosInstance
+      .post("/auth/basic/forgot-password", values)
       .then((response) => {
         if (response.status === 204) {
           setOpen(false);
@@ -47,8 +47,8 @@ function EmailDialog({ open, setOpen }: EmailDialogProps) {
   };
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger className="hover:underline">
-        Nie pamiętasz hasła?
+      <DialogTrigger className="w-full text-right hover:underline">
+        Odzyskaj hasło
       </DialogTrigger>
       <DialogContent
         onInteractOutside={(e) => {
