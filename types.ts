@@ -1,4 +1,4 @@
-export interface address {
+export interface Address {
   id: number;
   firstName: string;
   lastName: string;
@@ -10,4 +10,23 @@ export interface address {
   street: string;
   building: string;
   apartment: string;
+}
+
+enum DataType {
+  INTEGER = 'integer',
+  FLOAT = 'float',
+  STRING = 'string',
+  DICTIONARY = 'dictionary',
+}
+
+export interface Attribute {
+  id: string;
+  name: string;
+  dataType: DataType;
+  required: boolean;
+  unit: string;
+  min: number;
+  max: number;
+  isMultiSelect: boolean;
+  options: {id: string, value: string}[]
 }
