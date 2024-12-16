@@ -12,7 +12,7 @@ export interface Address {
   apartment: string;
 }
 
-enum DataType {
+export enum DataType {
   INTEGER = 'integer',
   FLOAT = 'float',
   STRING = 'string',

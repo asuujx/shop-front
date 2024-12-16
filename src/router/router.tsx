@@ -1,3 +1,4 @@
+import Admin from "@/pages/admin/admin";
 import App from "@/pages/App";
 import Login from "@/pages/auth/Login";
 import ResetPassword from "@/pages/auth/ResetPassword";
@@ -41,6 +42,10 @@ export const router = createBrowserRouter([
             element: <CreateOffer />,
           },
         ],
+      },
+      {
+        path: "admin",
+        element: <Admin />,
       },
     ],
   },
