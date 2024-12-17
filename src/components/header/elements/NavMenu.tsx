@@ -2,75 +2,63 @@ import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
 import axiosInstance from "@/lib/axios-instance";
 import { useQuery } from "@tanstack/react-query";
+import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import { useState } from "react";
+import { Category } from "types";
 
-interface Category {
-  id: string;
-  name: string;
-  parentId?: string;
-  isLeaf: boolean;
-  children?: Category[];
+const fetchBaseCategories = async () => {
+  const response = await axiosInstance.get<Category[]>("/categories/base");
+  return response.data;
 }
 
-const fetchCategories = async (): Promise<Category[]> => {
-  const response = await axiosInstance.get("/categories/base");
-  return response.data;
-};
-
-const renderCategories = (categories: Category[]) => {
-  return categories.map((category) => (
-    <div key={category.id}>
-      <DropdownMenuLabel className="font-bold">
-        {category.name}
-      </DropdownMenuLabel>
-      {category.children && category.children.length > 0 && (
-        <ul className="ml-4">
-          {category.children.map((child) => (
-            <li key={child.id}>
-              {child.isLeaf ? (
-                <DropdownMenuItem>{child.name}</DropdownMenuItem>
-              ) : (
-                <div>
-                  <DropdownMenuLabel className="font-bold">
-                    {child.name}
-                  </DropdownMenuLabel>
-                  {child.children && child.children.length > 0 && (
-                    <ul className="ml-4">
-                      {child.children.map((grandchild) => (
-                        <DropdownMenuItem key={grandchild.id}>
-                          {grandchild.name}
-                        </DropdownMenuItem>
-                      ))}
-                    </ul>
-                  )}
-                </div>
-              )}
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
-  ));
-};
-
 function NavMenu() {
-  const [openCategory, setOpenCategory] = useState<string | null>(null);
-  const { data: categories } = useQuery({
-    queryKey: ["categories"],
-    queryFn: fetchCategories,
-  });
+    const { data: categories, status } = useQuery({
+      queryKey: ["categories", "base"],
+      queryFn: fetchBaseCategories,
+    });
 
-  console.log(categories);
+  const [selectedCategories, setSelectedCategories] = useState<Category[]>([]);
+  const [selectedCategoriesPath, setSelectedCategoriesPath] = useState<
+    string[]
+  >([]);
 
-    const handleCategoryClick = (categoryId: string) => {
-      setOpenCategory(openCategory === categoryId ? null : categoryId);
-    };
+const handleCategoryClick = (category: Category) => {
+  if (!!category?.children.length) {
+    setSelectedCategoriesPath([...selectedCategoriesPath, category.id]);
+    setSelectedCategories(category.children);
+  } else {
+    setSelectedCategories(categories!);
+    setSelectedCategoriesPath([]);
+  }
+};
+
+const handleBackClick = () => {
+  const path = [...selectedCategoriesPath];
+  path.pop();
+
+  if (!path.length) {
+    setSelectedCategories(categories!);
+    setSelectedCategoriesPath(path);
+    return;
+  }
+
+  let category: Category | null = null;
+
+  for (const id of path) {
+    category = categories!.find((category) => category.id === id)!;
+  }
+
+  setSelectedCategories(category!.children);
+  setSelectedCategoriesPath(path);
+};
+
+if (status === "success" && !selectedCategories.length) {
+  setSelectedCategories(categories);
+}
 
   return (
     <DropdownMenu>
@@ -78,22 +66,29 @@ function NavMenu() {
         <Button variant="outline">Kategorie</Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-96 p-4">
-        {categories &&
-          categories.map((category) => (
-            <div key={category.id}>
-              <DropdownMenuLabel
-                className="font-bold cursor-pointer"
-                onClick={() => handleCategoryClick(category.id)}
-              >
-                {category.name}
-              </DropdownMenuLabel>
-              {openCategory === category.id && (
-                <div className="ml-4">
-                  {renderCategories(category.children || [])}
-                </div>
-              )}
-            </div>
-          ))}
+        {selectedCategoriesPath.length > 0 && (
+          <Button
+            type="button"
+            onClick={handleBackClick}
+            className="w-fit flex justify-start"
+          >
+            <ChevronLeftIcon />
+            <p>Wróć</p>
+          </Button>
+        )}
+
+        {selectedCategories.map((category: Category) => (
+          <Button
+            key={category.id}
+            type="button"
+            variant="ghost"
+            onClick={() => handleCategoryClick(category)}
+            className="flex items-center justify-between"
+          >
+            {category.name}
+            {!!category?.children.length && <ChevronRightIcon />}
+          </Button>
+        ))}
       </DropdownMenuContent>
     </DropdownMenu>
   );
