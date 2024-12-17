@@ -1,4 +1,3 @@
-import SuggestedCategories from "@/components/offers/SuggestedCategories";
 import {
   Form,
   FormControl,
@@ -13,8 +12,9 @@ import { createOfferSchema } from "@/lib/schemas/createOfferSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery } from "@tanstack/react-query";
 import { useDebounce } from "@uidotdev/usehooks";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { Attribute, Category, Product } from "types";
 import { z } from "zod";
 import { Button } from "../ui/button";
 import {
@@ -26,7 +26,17 @@ import {
 } from "../ui/card";
 import { Label } from "../ui/label";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
-import CategoryAttributes from "./CategoryAttributes";
+import CategoriesList from "./elements/CategoriesList";
+import CategoryAttributes from "./elements/CategoryAttributes";
+import SuggestedCategories from "./elements/SuggestedCategories";
+import SuggestedProducts from "./elements/SuggestedProducts";
+
+const fetchCategoryAttributes = async (categoryId: string) => {
+  const response = await axiosInstance.get(
+    `/categories/${categoryId}/attributes`
+  );
+  return response.data;
+};
 
 const fetchOfferStates = async () => {
   const response = await axiosInstance.get("/offers/product-states");
@@ -34,23 +44,17 @@ const fetchOfferStates = async () => {
 };
 
 function CreateOfferForm() {
-  const [title, setTitle] = useState("");
-  const [categoryId, setCategoryId] = useState("");
-  const debouncedTitle = useDebounce(title, 500);
   const [files, setFiles] = useState<File[]>([]);
+  const [title, setTitle] = useState("");
+  const debouncedTitle = useDebounce(title, 500);
+  const [category, setCategory] = useState<Category | null>(null);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [attributes, setAttributes] = useState<
     {
-      productCategoryAttributeId: string;
+      dbData: Attribute;
       value: string[];
     }[]
   >([]);
-
-  const { data: offerStates } = useQuery({
-    queryKey: ["offerStates"],
-    queryFn: fetchOfferStates,
-  });
-
-  // console.log("files", files);
 
   const form = useForm<z.infer<typeof createOfferSchema>>({
     resolver: zodResolver(createOfferSchema),
@@ -63,10 +67,61 @@ function CreateOfferForm() {
     },
   });
 
-  // console.log(form.formState.errors);
+  // refetch: refetchCategoryAttributes
+  const { data: categoryAttributes } = useQuery<Attribute[]>({
+    queryKey: ["categoryAttributes", category?.id],
+    queryFn: () => fetchCategoryAttributes(category!.id),
+    enabled: !!category?.id,
+  });
+
+  const { data: offerStates } = useQuery({
+    queryKey: ["offerStates"],
+    queryFn: fetchOfferStates,
+  });
+
+  const handleChangeAttributeValue = (id: string, value: string[]) => {
+    const updatedAttributes = attributes.map((attribute) =>
+      attribute.dbData.id === id ? { ...attribute, value } : attribute
+    );
+    setAttributes([...updatedAttributes]);
+  };
+
+  const updateAttributes = (product: Product | null) => {
+    if (!product) {
+      const updatedAttributes = attributes.map((attribute) => ({
+        ...attribute,
+        value: [""],
+      }));
+      setAttributes(() => [...updatedAttributes]);
+    } else {
+      const updatedAttributes = attributes.map((attribute) => {
+        const productAttribute = product.attributes.find(
+          (productAttribute) =>
+            productAttribute.categoryAttributeId === attribute.dbData.id
+        );
+        const value = productAttribute
+          ? productAttribute?.value
+            ? [productAttribute.value]
+            : productAttribute.options.map((option) => option.id)
+          : [""];
+
+        return { ...attribute, value };
+      });
+      setAttributes(() => [...updatedAttributes]);
+    }
+  };
+
+  const handleAutoFillClick = (product: Product) => {
+    updateAttributes(product);
+    setSelectedProduct(null);
+  };
+
+  const handleChangeSelectedProduct = (product: Product | null) => {
+    updateAttributes(product);
+    setSelectedProduct(() => product);
+  };
 
   const onSubmit = async (values: z.infer<typeof createOfferSchema>) => {
-    console.log(values);
     const formData = new FormData();
 
     formData.append("title", values.title);
@@ -78,18 +133,35 @@ function CreateOfferForm() {
       formData.append("productImages", file);
     }
 
-    const product = {
-      name: values.title,
-      description: values.description,
-      categoryId: categoryId,
-      attributes: attributes,
-    };
+    let endpoint: string;
 
-    formData.append("product", JSON.stringify(product));
+    if (selectedProduct) {
+      formData.append("productId", selectedProduct.id);
+      endpoint = "/offers";
+    } else {
+      const product = {
+        name: values.title,
+        description: values.description,
+        categoryId: category!.id,
+        attributes: attributes,
+      };
+      formData.append("product", JSON.stringify(product));
+      endpoint = "/offers/full";
+    }
 
-    const response = await axiosInstance.post("/offers/full", formData);
-    console.log(response);
+    await axiosInstance.post(endpoint, formData);
   };
+
+  useEffect(() => {
+    if (!categoryAttributes) return;
+
+    const mapAttributes = categoryAttributes.map((categoryAttribute) => ({
+      dbData: categoryAttribute,
+      value: [""],
+    }));
+
+    setAttributes(mapAttributes);
+  }, [categoryAttributes]);
 
   return (
     <Form {...form}>
@@ -105,16 +177,11 @@ function CreateOfferForm() {
                 Zdjęcia <p className="text-red-500">*</p>
               </span>
             </CardTitle>
-            <CardDescription>Dodaj zdjęcia do 5MB</CardDescription>
+            <CardDescription>
+              Dodaj zdjęcia, maksymalnie 5, maksymalnie 5 MB
+            </CardDescription>
           </CardHeader>
           <CardContent>
-            {/* <Button
-              variant="outline"
-              className="w-full py-10 flex flex-col h-full border-dashed border-black"
-            >
-              <Plus />
-              <p>Dodaj zdjęcia</p>
-            </Button> */}
             <Input
               type="file"
               multiple
@@ -123,6 +190,13 @@ function CreateOfferForm() {
                 setFiles([...Array.from(e.target.files ?? [])]);
               }}
             />
+            {/* <Button
+              variant="outline"
+              className="w-full py-10 flex flex-col h-full border-dashed border-black"
+            >
+              <Plus />
+              <p>Dodaj zdjęcia</p>
+            </Button> */}
           </CardContent>
         </Card>
 
@@ -169,16 +243,16 @@ function CreateOfferForm() {
                 Kategoria <p className="text-red-500">*</p>
               </span>
             </CardTitle>
+            <CardDescription>Wybierz kategorię produktu</CardDescription>
           </CardHeader>
           <CardContent className="flex flex-col gap-5">
             <SuggestedCategories
               query={debouncedTitle}
               form={form}
-              setCategoryId={setCategoryId}
+              category={category}
+              setCategory={setCategory}
             />
-            <Button variant="outline" className="w-full py-5">
-              Wszystkie kategorie
-            </Button>
+            <CategoriesList setCategory={setCategory} />
           </CardContent>
         </Card>
 
@@ -190,29 +264,22 @@ function CreateOfferForm() {
                 Produkty <p className="text-red-500">*</p>
               </span>
             </CardTitle>
+            <CardDescription>
+              Wybierz gotowy produkt z listy, dodaj nowy lub autouzupełnij pola
+              formularza na bazie wybranego produktu
+            </CardDescription>
           </CardHeader>
-          <CardContent>
-            <FormField
-              control={form.control}
-              name="productId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <RadioGroup
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
-                      <div className="flex gap-2 items-center border px-2 py-4 rounded-lg">
-                        <RadioGroupItem value="1" id="1" />
-                        <Label htmlFor="1" className="text-md">
-                          Żaden z powyższych
-                        </Label>
-                      </div>
-                    </RadioGroup>
-                  </FormControl>
-                </FormItem>
-              )}
+          <CardContent className="flex flex-col gap-2">
+            <SuggestedProducts
+              query={debouncedTitle}
+              categoryId={category?.id ?? null}
+              selectedProduct={selectedProduct}
+              handleChangeSelectedProduct={handleChangeSelectedProduct}
+              handleAutoFillClick={handleAutoFillClick}
             />
+            <RadioGroup
+              onValueChange={() => handleChangeSelectedProduct(null)}
+            ></RadioGroup>
           </CardContent>
         </Card>
 
@@ -224,11 +291,15 @@ function CreateOfferForm() {
                 Cechy produktu <p className="text-red-500">*</p>
               </span>
             </CardTitle>
+            <CardDescription>
+              Wybierz cechy produktu lub uzupełnij je ręcznie
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <CategoryAttributes
-              categoryId={categoryId}
-              setFormAttributes={setAttributes}
+              data={attributes}
+              handleChangeAttributeValue={handleChangeAttributeValue}
+              isSuggestedProductSelected={!!selectedProduct}
             />
           </CardContent>
         </Card>
@@ -268,6 +339,7 @@ function CreateOfferForm() {
                 Cena <p className="text-red-500">*</p>
               </span>
             </CardTitle>
+            <CardDescription>Podaj cenę oferty, w złotówkach</CardDescription>
           </CardHeader>
           <CardContent>
             <FormField
@@ -275,7 +347,12 @@ function CreateOfferForm() {
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input {...field} type="number" placeholder="Cena" />
+                    <Input
+                      {...field}
+                      type="number"
+                      placeholder="Cena"
+                      className="[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -292,6 +369,7 @@ function CreateOfferForm() {
                 Stan <p className="text-red-500">*</p>
               </span>
             </CardTitle>
+            <CardDescription>Wybierz stan produktu</CardDescription>
           </CardHeader>
           <CardContent>
             <FormField
@@ -313,11 +391,11 @@ function CreateOfferForm() {
                           <div>
                             <Label
                               htmlFor={state.id}
-                              className="text-md font-semibold"
+                              className="font-semibold"
                             >
                               {state.name}
                             </Label>
-                            <p className="text-md text-gray-600">
+                            <p className="text-xs text-gray-600">
                               {state.description}
                             </p>
                           </div>
