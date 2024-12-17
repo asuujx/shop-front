@@ -70,6 +70,8 @@ interface MultiSelectProps
     icon?: React.ComponentType<{ className?: string }>;
   }[];
 
+  value: string[];
+
   /**
    * Callback function triggered when the selected values change.
    * Receives an array of the new selected values.
@@ -133,6 +135,7 @@ export const MultiSelect = React.forwardRef<
       modalPopover = false,
       asChild = false,
       className,
+      value,
       ...props
     },
     ref
@@ -141,7 +144,7 @@ export const MultiSelect = React.forwardRef<
       React.useState<string[]>(defaultValue);
     const [isPopoverOpen, setIsPopoverOpen] = React.useState(false);
     const [isAnimating, setIsAnimating] = React.useState(false);
-
+    
     const handleInputKeyDown = (
       event: React.KeyboardEvent<HTMLInputElement>
     ) => {
@@ -187,6 +190,10 @@ export const MultiSelect = React.forwardRef<
         onValueChange(allValues);
       }
     };
+
+    React.useEffect(() => {
+      setSelectedValues(value)
+    }, [value])
 
     return (
       <Popover
