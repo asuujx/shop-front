@@ -5,8 +5,10 @@ import ResetPassword from "@/pages/auth/ResetPassword";
 import SignUp from "@/pages/auth/SignUp";
 import Verify from "@/pages/auth/Verify";
 import CreateOffer from "@/pages/offers/CreateOffer";
+import Offer from "@/pages/offers/Offer";
+import OffersList from "@/pages/offers/OffersList";
 import User from "@/pages/user/User";
-import { createBrowserRouter, Outlet } from "react-router-dom";
+import { createBrowserRouter } from "react-router-dom";
 
 export const router = createBrowserRouter([
   {
@@ -35,11 +37,15 @@ export const router = createBrowserRouter([
       },
       {
         path: "offers/",
-        element: <Outlet />,
+        element: <OffersList />,
         children: [
           {
             path: "create",
             element: <CreateOffer />,
+          },
+          {
+            path: ":id",
+            element: <Offer />
           },
         ],
       },
