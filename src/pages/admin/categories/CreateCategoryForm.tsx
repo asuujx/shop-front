@@ -19,7 +19,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/hooks/use-toast";
 import axiosInstance from "@/lib/axios-instance";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -35,8 +35,6 @@ export interface Attribute {
   dataType: string;
   required: string;
   unit: string;
-  //   min: string;
-  //   max: string;
   isMultiSelect: string;
   options: string;
 }
@@ -47,8 +45,6 @@ export const attributeSchema = z
     dataType: z.enum(["integer", "float", "string", "dictionary"]),
     required: z.enum(["true", "false"]).transform((val) => val === "true"),
     unit: z.string(),
-    // min: z.coerce.number(),
-    // max: z.coerce.number(),
     isMultiSelect: z.enum(["true", "false"]).transform((val) => val === "true"),
     options: z
       .string()
@@ -85,9 +81,7 @@ const formSchema = z.object({
 const CreateCategoryForm = ({ data }: CreateCategoryFormProps) => {
   const [attributes, setAttributes] = useState<Attribute[]>([]);
 
-  const categoriesWithoutAttributes = data.filter(
-    (category) => category.attributes.length === 0
-  );
+  const queryClient = useQueryClient();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -106,6 +100,7 @@ const CreateCategoryForm = ({ data }: CreateCategoryFormProps) => {
       form.reset();
       setAttributes([]);
       toast({ title: "Kategoria została utworzona", variant: "default" });
+      queryClient.invalidateQueries({ queryKey: ["categories"] });
     },
   });
 
@@ -135,6 +130,10 @@ const CreateCategoryForm = ({ data }: CreateCategoryFormProps) => {
 
     await mutateAsync(body);
   };
+
+  const categoriesWithoutAttributes = data.filter(
+    (category) => category.attributes.length === 0
+  );
 
   return (
     <Form {...form}>

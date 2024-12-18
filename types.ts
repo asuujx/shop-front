@@ -30,3 +30,16 @@ export interface Attribute {
   isMultiSelect: boolean;
   options: {id: string, value: string}[]
 }
+
+export enum OfferStatus {
+  REJECTED = 'rejected',
+  PENDING = 'pending',
+  ACTIVE = 'active',
+  INACTIVE = 'inactive',
+}
+
+export enum ProductStatus {
+  WAITING = 'waiting',
+  APPROVED = 'approved',
+  REJECTED = 'rejected',
+}

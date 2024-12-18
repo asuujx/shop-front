@@ -59,24 +59,24 @@ const getBaseCategories = async () => {
   return response.data;
 };
 
-const getCategories = async () => {
-  const response = await axiosInstance.get<Category[]>("/categories");
+const getCategoriesAlphabetical = async () => {
+  const response = await axiosInstance.get<Category[]>(
+    "/categories?sort=name:asc"
+  );
   return response.data;
 };
 
 const Categories = () => {
   const { data: baseCategoriesData, isSuccess: baseCategoriesIsSuccess } =
     useQuery({
-      queryKey: ["base-categories"],
+      queryKey: ["categories", "base"],
       queryFn: getBaseCategories,
     });
 
   const { data: categoriesData, isSuccess: categoriesIsSuccess } = useQuery({
-    queryKey: ["categories-list"],
-    queryFn: getCategories,
+    queryKey: ["categories", "list", "alphabetical"],
+    queryFn: getCategoriesAlphabetical,
   });
-
-//   console.log(categoriesData);
 
   const isReady =
     baseCategoriesIsSuccess &&

@@ -1,4 +1,5 @@
 import Categories from "./categories/Categories";
+import Offers from "./offers/Offers";
 
 const Admin = () => {
   return (
@@ -7,9 +8,17 @@ const Admin = () => {
         <h1 className="mt-10 ml-5 text-4xl font-semibold mb-8">
           Panel Administratora
         </h1>
-        <section id="categories">
-          <Categories />
-        </section>
+        <div className="flex flex-col gap-4">
+          <section id="categories">
+            <Categories />
+          </section>
+          <section id="offers">
+            <Offers />
+          </section>
+          {/* <section id="products">
+            <Products />
+          </section> */}
+        </div>
       </div>
     </div>
   );
