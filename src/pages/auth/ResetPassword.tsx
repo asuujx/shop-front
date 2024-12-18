@@ -54,7 +54,7 @@ function ResetPassword() {
   };
 
   return (
-    <Card className="w-screen h-screen grid place-content-center">
+    <Card className="h-screen grid place-content-center">
       <CardHeader>
         <CardTitle className="text-5xl">Zresetuj hasło</CardTitle>
       </CardHeader>

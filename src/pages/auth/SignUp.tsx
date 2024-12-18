@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 
 function SignUp() {
   return (
-    <div className="w-screen h-screen">
+    <div>
       <div className="max-w-screen-xl mx-4 mb-5 lg:mx-auto flex flex-col items-center justify-center">
         <h1 className="mt-20 mb-10 text-5xl font-semibold">Utwórz konto</h1>
         <Tabs defaultValue="personal">

@@ -28,7 +28,7 @@ function Verify() {
     [token];
 
   return (
-    <div className="w-screen h-screen flex items-center justify-center">
+    <div className="flex items-center justify-center">
       <Card className="p-5">
         <CardHeader className="text-center text-4xl font-bold">
           Dziękujemy!
