@@ -63,11 +63,9 @@ function CreateOfferForm() {
       description: "",
       price: 0,
       productStateId: "",
-      productId: "",
     },
   });
 
-  // refetch: refetchCategoryAttributes
   const { data: categoryAttributes } = useQuery<Attribute[]>({
     queryKey: ["categoryAttributes", category?.id],
     queryFn: () => fetchCategoryAttributes(category!.id),
@@ -185,18 +183,10 @@ function CreateOfferForm() {
             <Input
               type="file"
               multiple
-              placeholder="Wybierz zdjęcia"
               onChange={(e) => {
                 setFiles([...Array.from(e.target.files ?? [])]);
               }}
             />
-            {/* <Button
-              variant="outline"
-              className="w-full py-10 flex flex-col h-full border-dashed border-black"
-            >
-              <Plus />
-              <p>Dodaj zdjęcia</p>
-            </Button> */}
           </CardContent>
         </Card>
 
@@ -308,7 +298,9 @@ function CreateOfferForm() {
         <Card>
           <CardHeader>
             <CardTitle>
-              <span className="text-xl flex gap-1">Opis</span>
+              <span className="text-xl flex gap-1">
+                Opis <p className="text-red-500">*</p>
+              </span>
             </CardTitle>
             <CardDescription>Podaj szczegółowy opis oferty</CardDescription>
           </CardHeader>

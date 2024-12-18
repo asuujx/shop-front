@@ -20,22 +20,11 @@ const fetchCategories = async (query: string) => {
 };
 
 function SuggestedCategories({ query, form, category, setCategory }: SuggestedCategoriesProps) {
-  const { data: categories, refetch: refetchSuggestedCategories } = useQuery({
+  const { data: categories } = useQuery({
     queryKey: ["categories", "suggested", query],
     queryFn: () => fetchCategories(query),
     enabled: query.length >= 3,
-    refetchOnMount: false,
-    refetchOnReconnect: false,
-    refetchOnWindowFocus: false,
   });
-
-  // useEffect(() => {
-  //   if (query.length >= 3 && !category?.id) {
-  //     refetchSuggestedCategories()
-  //   }
-  // }, [query, category?.id]);
-
-  // console.log(categories);
 
   return (
     <FormField
