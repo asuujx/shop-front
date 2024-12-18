@@ -12,6 +12,12 @@ export interface Address {
   apartment: string;
 }
 
+export enum DataType {
+  INTEGER = 'integer',
+  FLOAT = 'float',
+  STRING = 'string',
+  DICTIONARY = 'dictionary',
+
 enum AttributeDataType {
   INTEGER = "integer",
   FLOAT = "float",
@@ -26,6 +32,20 @@ export interface Attribute {
   required: boolean;
   unit: string;
   isMultiSelect: boolean;
+  options: {id: string, value: string}[]
+}
+
+export enum OfferStatus {
+  REJECTED = 'rejected',
+  PENDING = 'pending',
+  ACTIVE = 'active',
+  INACTIVE = 'inactive',
+}
+
+export enum ProductStatus {
+  WAITING = 'waiting',
+  APPROVED = 'approved',
+  REJECTED = 'rejected',
   options: { id: string; value: string }[];
 }
 
