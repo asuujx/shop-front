@@ -13,12 +13,13 @@ export interface Address {
 }
 
 export enum DataType {
-  INTEGER = 'integer',
-  FLOAT = 'float',
-  STRING = 'string',
-  DICTIONARY = 'dictionary',
+  INTEGER = "integer",
+  FLOAT = "float",
+  STRING = "string",
+  DICTIONARY = "dictionary",
+}
 
-enum AttributeDataType {
+export enum AttributeDataType {
   INTEGER = "integer",
   FLOAT = "float",
   STRING = "string",
@@ -32,21 +33,20 @@ export interface Attribute {
   required: boolean;
   unit: string;
   isMultiSelect: boolean;
-  options: {id: string, value: string}[]
+  options: { id: string; value: string }[];
 }
 
 export enum OfferStatus {
-  REJECTED = 'rejected',
-  PENDING = 'pending',
-  ACTIVE = 'active',
-  INACTIVE = 'inactive',
+  REJECTED = "rejected",
+  PENDING = "pending",
+  ACTIVE = "active",
+  INACTIVE = "inactive",
 }
 
 export enum ProductStatus {
-  WAITING = 'waiting',
-  APPROVED = 'approved',
-  REJECTED = 'rejected',
-  options: { id: string; value: string }[];
+  WAITING = "waiting",
+  APPROVED = "approved",
+  REJECTED = "rejected",
 }
 
 export interface Category {
@@ -69,12 +69,6 @@ export interface ProductAttribute {
   }[];
 }
 
-enum ProductStatus {
-  WAITING = "waiting",
-  APPROVED = "approved",
-  REJECTED = "rejected",
-}
-
 export interface Product {
   id: string;
   name: string;
@@ -88,4 +82,34 @@ export interface Product {
     order: number;
   }[];
   attributes: ProductAttribute[];
+}
+
+export interface Offer {
+  id: string;
+  title: string;
+  description: string;
+  price: number;
+  status: OfferStatus;
+  images: {
+    id: string;
+    url: string;
+    order: number;
+  }[];
+  product: {
+    id: string;
+    name: string;
+    status: ProductStatus;
+  };
+  productState: {
+    id: string;
+    name: string;
+  };
+  author: {
+    id: string;
+    email: string;
+    firstName: string;
+    lastName: string;
+  };
+  createdAt: string;
+  updatedAt: string;
 }
