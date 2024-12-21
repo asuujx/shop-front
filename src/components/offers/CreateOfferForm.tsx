@@ -7,6 +7,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { toast } from "@/hooks/use-toast";
 import axiosInstance from "@/lib/axios-instance";
 import { createOfferSchema } from "@/lib/schemas/createOfferSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -137,17 +138,44 @@ function CreateOfferForm() {
       formData.append("productId", selectedProduct.id);
       endpoint = "/offers";
     } else {
+      const transformedAttributes = attributes.map(attribute => ({
+        productCategoryAttributeId: attribute.dbData.id,
+        value: attribute.value
+      }))
+
       const product = {
         name: values.title,
         description: values.description,
         categoryId: category!.id,
-        attributes: attributes,
+        attributes: transformedAttributes,
       };
       formData.append("product", JSON.stringify(product));
       endpoint = "/offers/full";
     }
 
-    await axiosInstance.post(endpoint, formData);
+    await axiosInstance
+      .post(endpoint, formData)
+      .then((response) => {
+        if (response.status === 201) {
+          toast({
+            title: "Sukces",
+            description: "Twoja oferta została dodana pomyślnie.",
+          });
+          form.reset();
+          setFiles([]);
+          setTitle("");
+          setCategory(null);
+          setSelectedProduct(null);
+          setAttributes([]);
+        }
+      })
+      .catch(() => {
+        toast({
+          variant: "destructive",
+          title: "Wystąpił błąd",
+          description: "Nie udało się dodać oferty.",
+        });
+      });
   };
 
   useEffect(() => {
@@ -381,10 +409,7 @@ function CreateOfferForm() {
                         >
                           <RadioGroupItem value={state.id} id={state.id} />
                           <div>
-                            <Label
-                              htmlFor={state.id}
-                              className="font-semibold"
-                            >
+                            <Label htmlFor={state.id} className="font-semibold">
                               {state.name}
                             </Label>
                             <p className="text-xs text-gray-600">
