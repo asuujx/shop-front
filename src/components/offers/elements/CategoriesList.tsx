@@ -24,7 +24,6 @@ const fetchBaseCategories = async () => {
 function CategoriesList({ setCategory }: CategoriesListProps) {
   const {
     data: categories,
-    isLoading,
     status,
   } = useQuery({
     queryKey: ["categories", "base"],

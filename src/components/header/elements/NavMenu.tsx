@@ -2,75 +2,90 @@ import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuTrigger
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import axiosInstance from "@/lib/axios-instance";
 import { useQuery } from "@tanstack/react-query";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Category } from "types";
 
 const fetchBaseCategories = async () => {
   const response = await axiosInstance.get<Category[]>("/categories/base");
   return response.data;
-}
+};
 
 function NavMenu() {
-    const { data: categories, status } = useQuery({
-      queryKey: ["categories", "base"],
-      queryFn: fetchBaseCategories,
-    });
+  const { data: categories, status } = useQuery({
+    queryKey: ["categories", "base"],
+    queryFn: fetchBaseCategories,
+  });
 
+  const navigate = useNavigate();
+
+  const [dropdownOpen, setDropdownOpen] = useState(false);
   const [selectedCategories, setSelectedCategories] = useState<Category[]>([]);
   const [selectedCategoriesPath, setSelectedCategoriesPath] = useState<
     string[]
   >([]);
 
-const handleCategoryClick = (category: Category) => {
-  if (!!category?.children.length) {
-    setSelectedCategoriesPath([...selectedCategoriesPath, category.id]);
-    setSelectedCategories(category.children);
-  } else {
-    setSelectedCategories(categories!);
-    setSelectedCategoriesPath([]);
-  }
-};
+  const handleCategoryClick = (category: Category) => {
+    if (!!category?.children.length) {
+      setSelectedCategoriesPath([...selectedCategoriesPath, category.id]);
+      setSelectedCategories(category.children);
+    } else {
+      navigate(`/products/${category.id}`);
+      setDropdownOpen(false);
+      setSelectedCategories(categories!);
+      setSelectedCategoriesPath([]);
+    }
+  };
 
-const handleBackClick = () => {
-  const path = [...selectedCategoriesPath];
-  path.pop();
+  const handleBackClick = () => {
+    const path = [...selectedCategoriesPath];
+    path.pop();
 
-  if (!path.length) {
-    setSelectedCategories(categories!);
+    if (!path.length) {
+      setSelectedCategories(categories!);
+      setSelectedCategoriesPath(path);
+      return;
+    }
+
+    let category: Category | null = null;
+
+    for (const id of path) {
+      category = categories!.find((category) => category.id === id)!;
+    }
+
+    setSelectedCategories(category!.children);
     setSelectedCategoriesPath(path);
-    return;
+  };
+
+  if (status === "success" && !selectedCategories.length) {
+    setSelectedCategories(categories);
   }
 
-  let category: Category | null = null;
+  const onOpenChange = (dropdownOpen: boolean) => {
+    setDropdownOpen(dropdownOpen);
 
-  for (const id of path) {
-    category = categories!.find((category) => category.id === id)!;
+    if (!dropdownOpen) {
+      setSelectedCategories(categories!);
+      setSelectedCategoriesPath([]);
+    }
   }
-
-  setSelectedCategories(category!.children);
-  setSelectedCategoriesPath(path);
-};
-
-if (status === "success" && !selectedCategories.length) {
-  setSelectedCategories(categories);
-}
 
   return (
-    <DropdownMenu>
+    <DropdownMenu open={dropdownOpen} onOpenChange={onOpenChange}>
       <DropdownMenuTrigger asChild>
         <Button variant="outline">Kategorie</Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-96 p-4">
+      <DropdownMenuContent className="">
         {selectedCategoriesPath.length > 0 && (
           <Button
             type="button"
             onClick={handleBackClick}
-            className="w-fit flex justify-start"
+            className="w-full flex justify-start"
           >
             <ChevronLeftIcon />
             <p>Wróć</p>
@@ -83,7 +98,7 @@ if (status === "success" && !selectedCategories.length) {
             type="button"
             variant="ghost"
             onClick={() => handleCategoryClick(category)}
-            className="flex items-center justify-between"
+            className="w-full flex items-center justify-between"
           >
             {category.name}
             {!!category?.children.length && <ChevronRightIcon />}
