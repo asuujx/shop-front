@@ -6,7 +6,7 @@ import SignUp from "@/pages/auth/SignUp";
 import Verify from "@/pages/auth/Verify";
 import Home from "@/pages/home/Home";
 import CreateOffer from "@/pages/offers/CreateOffer";
-import Offer from "@/pages/offers/Offer";
+import Offer from "@/pages/offers/OfferPage";
 import OffersList from "@/pages/offers/OffersList";
 import Product from "@/pages/products/ProductPage";
 import ProductsList from "@/pages/products/ProductsList";
