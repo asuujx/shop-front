@@ -5,9 +5,8 @@ import { Button } from "../ui/button";
 import {
   Drawer,
   DrawerContent,
-  DrawerFooter,
   DrawerHeader,
-  DrawerTrigger,
+  DrawerTrigger
 } from "../ui/drawer";
 import AuthButtons from "./elements/AuthButtons";
 import CreateOfferButton from "./elements/CreateOfferButton";
@@ -43,20 +42,18 @@ function Header() {
     <div className="w-full top-0 px-5 py-2 border-b shadow-md">
       <div className="max-w-screen-xl mx-auto flex items-center justify-between">
         <Logo />
-
         <Drawer open={open} onOpenChange={setOpen}>
           <DrawerTrigger asChild>
             <Button variant="outline">
               <Menu />
             </Button>
           </DrawerTrigger>
-          <DrawerContent className="h-viewport flex flex-col gap-5 items-center">
-            <DrawerHeader>Menu</DrawerHeader>
-            <SearchBar />
+          <DrawerContent className="pb-10 px-4 flex flex-col gap-5">
+            <DrawerHeader className="text-2xl font-semibold">Menu</DrawerHeader>
             <NavMenu />
-            <DrawerFooter>
-              <AuthButtons />
-            </DrawerFooter>
+            <CreateOfferButton />
+            <SearchBar />
+            <AuthButtons />
           </DrawerContent>
         </Drawer>
       </div>
