@@ -10,7 +10,6 @@ import {
   DrawerTrigger,
 } from "../ui/drawer";
 import AuthButtons from "./elements/AuthButtons";
-import Cart from "./elements/Cart";
 import CreateOfferButton from "./elements/CreateOfferButton";
 import Logo from "./elements/Logo";
 import NavMenu from "./elements/NavMenu";
@@ -32,7 +31,6 @@ function Header() {
           </div>
 
           <div className="flex gap-5 items-center">
-            <Cart />
             <AuthButtons />
             <CreateOfferButton />
           </div>
@@ -56,7 +54,6 @@ function Header() {
             <DrawerHeader>Menu</DrawerHeader>
             <SearchBar />
             <NavMenu />
-            <Cart />
             <DrawerFooter>
               <AuthButtons />
             </DrawerFooter>
