@@ -35,7 +35,7 @@ function NavMenu() {
       setSelectedCategoriesPath([...selectedCategoriesPath, category.id]);
       setSelectedCategories(category.children);
     } else {
-      navigate(`/products/${category.id}`);
+      navigate(`/products?categoryId=${category.id}`);
       setDropdownOpen(false);
       setSelectedCategories(categories!);
       setSelectedCategoriesPath([]);
