@@ -62,7 +62,7 @@ function CreateOfferForm() {
     defaultValues: {
       title: "",
       description: "",
-      price: 0,
+      price: "",
       productStateId: "",
     },
   });
