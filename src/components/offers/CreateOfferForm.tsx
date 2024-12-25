@@ -11,7 +11,7 @@ import { toast } from "@/hooks/use-toast";
 import axiosInstance from "@/lib/axios-instance";
 import { createOfferSchema } from "@/lib/schemas/createOfferSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useDebounce } from "@uidotdev/usehooks";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -44,34 +44,79 @@ const fetchOfferStates = async () => {
   return response.data;
 };
 
+const createOfferMutationFn = async ({ endpoint, formData }: { endpoint: string, formData: FormData }) => {
+  const response = await axiosInstance.post(endpoint, formData);
+  return response.data;
+};
+
+const createImagesPreview = (images: File[]) => {
+  return images.map((image, index) => ({
+    id: index.toString(),
+    previewUrl: URL.createObjectURL(image),
+  }));
+};
+
 function CreateOfferForm() {
-  const [files, setFiles] = useState<File[]>([]);
-  const [title, setTitle] = useState("");
-  const debouncedTitle = useDebounce(title, 500);
-  const [category, setCategory] = useState<Category | null>(null);
+  const form = useForm<z.infer<typeof createOfferSchema>>({
+    resolver: zodResolver(createOfferSchema),
+    defaultValues: {
+      images: [],
+      title: "",
+      description: "",
+      price: 1,
+      categoryId: "(null)",
+      productId: "(null)",
+      productStateId: "",
+      attributes: []
+    },
+  });
+
+  const watchTitle = form.watch("title");
+  const watchCategoryId = form.watch("categoryId");
+  const debouncedTitle = useDebounce(watchTitle, 500);
+
+  const [images, setImages] = useState<{ id: string; previewUrl: string }[]>(
+    []
+  );
+  const [selectedCategory, setSelectedCategory] = useState<Category | null>(
+    null
+  );
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const [attributes, setAttributes] = useState<
+  const [categoryAttributes, setCategoryAttributes] = useState<
     {
       dbData: Attribute;
       value: string[];
     }[]
   >([]);
 
-  const form = useForm<z.infer<typeof createOfferSchema>>({
-    resolver: zodResolver(createOfferSchema),
-    defaultValues: {
-      title: "",
-      description: "",
-      price: 0,
-      productStateId: "",
-    },
+  const { data: categoryAttributesData } = useQuery<Attribute[]>({
+    queryKey: ["categoryAttributes", selectedCategory?.id],
+    queryFn: () => fetchCategoryAttributes(selectedCategory!.id),
+    enabled: !!selectedCategory?.id,
   });
 
-  const { data: categoryAttributes } = useQuery<Attribute[]>({
-    queryKey: ["categoryAttributes", category?.id],
-    queryFn: () => fetchCategoryAttributes(category!.id),
-    enabled: !!category?.id,
-  });
+  const { mutate: mutateCreateOffer } = useMutation({
+    mutationKey: ["createOffer"],
+    mutationFn: createOfferMutationFn,
+    onSuccess: () => {
+      toast({
+        title: "Sukces",
+        description: "Twoja oferta została dodana pomyślnie.",
+      });
+      form.reset();
+      setImages([]);
+      setSelectedCategory(null);
+      setSelectedProduct(null);
+      setCategoryAttributes([]);
+    },
+    onError: () => {
+      toast({
+        variant: "destructive",
+        title: "Wystąpił błąd",
+        description: "Nie udało się dodać oferty.",
+      });
+    }
+  })
 
   const { data: offerStates } = useQuery({
     queryKey: ["offerStates"],
@@ -79,48 +124,72 @@ function CreateOfferForm() {
   });
 
   const handleChangeAttributeValue = (id: string, value: string[]) => {
-    const updatedAttributes = attributes.map((attribute) =>
+    const updatedAttributes = categoryAttributes.map((attribute) =>
       attribute.dbData.id === id ? { ...attribute, value } : attribute
     );
-    setAttributes([...updatedAttributes]);
+
+    form.setValue("attributes", updatedAttributes.map(attribute => ({ productCategoryAttributeId: attribute.dbData.id, value: attribute.value })));
+    setCategoryAttributes([...updatedAttributes]);
   };
 
-  const updateAttributes = (product: Product | null) => {
+  const updateAttributeValues = (product: Product | null) => {
     if (!product) {
-      const updatedAttributes = attributes.map((attribute) => ({
+      const updatedAttributes = categoryAttributes.map((attribute) => ({
         ...attribute,
         value: [""],
       }));
-      setAttributes(() => [...updatedAttributes]);
+      setCategoryAttributes(() => [...updatedAttributes]);
+      form.setValue("attributes", updatedAttributes.map(attribute => ({ productCategoryAttributeId: attribute.dbData.id, value: attribute.value })));
     } else {
-      const updatedAttributes = attributes.map((attribute) => {
+      const updatedAttributes = categoryAttributes.map((attribute) => {
         const productAttribute = product.attributes.find(
           (productAttribute) =>
             productAttribute.categoryAttributeId === attribute.dbData.id
         );
         const value = productAttribute
-          ? productAttribute?.value
+          ? (productAttribute?.value
             ? [productAttribute.value]
-            : productAttribute.options.map((option) => option.id)
+            : (productAttribute.options.length > 0 ? productAttribute.options.map((option) => option.id) : [""]))
           : [""];
 
         return { ...attribute, value };
       });
-      setAttributes(() => [...updatedAttributes]);
+      setCategoryAttributes(() => [...updatedAttributes]);
+      form.setValue("attributes", updatedAttributes.map(attribute => ({ productCategoryAttributeId: attribute.dbData.id, value: attribute.value })));
     }
   };
 
   const handleAutoFillClick = (product: Product) => {
-    updateAttributes(product);
+    updateAttributeValues(product);
     setSelectedProduct(null);
+    form.setValue("productId", "(null)");
   };
 
   const handleChangeSelectedProduct = (product: Product | null) => {
-    updateAttributes(product);
+    updateAttributeValues(product);
     setSelectedProduct(() => product);
+    form.setValue("productId", product ? product.id : "(null)");
   };
 
   const onSubmit = async (values: z.infer<typeof createOfferSchema>) => {
+    console.log("onSubmit: ", values);
+
+    // Attribute validation
+    const missingRequiredAttributes = categoryAttributes.filter(
+      (attribute) =>
+        attribute.dbData.required && attribute.value[0] === ""
+    );
+
+    if (missingRequiredAttributes.length > 0 && !selectedProduct) {
+      toast({
+        variant: "destructive",
+        title: "Błąd",
+        description: `Uzupełnij wszystkie wymagane cechy produktu: ${missingRequiredAttributes.map((attribute) => attribute.dbData.name).join(", ")}.`,
+      });
+
+      return;
+    }
+
     const formData = new FormData();
 
     formData.append("title", values.title);
@@ -128,66 +197,65 @@ function CreateOfferForm() {
     formData.append("price", String(values.price));
     formData.append("productStateId", values.productStateId);
 
-    for (const file of files) {
+    for (const file of values.images) {
       formData.append("productImages", file);
     }
 
     let endpoint: string;
 
-    if (selectedProduct) {
-      formData.append("productId", selectedProduct.id);
+    if (values.productId !== "(null)") {
+      formData.append("productId", values.productId);
       endpoint = "/offers";
     } else {
-      const transformedAttributes = attributes.map(attribute => ({
-        productCategoryAttributeId: attribute.dbData.id,
-        value: attribute.value
-      }))
-
+      const transformedAttributes = values.attributes.filter(attribute => attribute.value[0] !== "");
       const product = {
         name: values.title,
         description: values.description,
-        categoryId: category!.id,
+        categoryId: values.categoryId,
         attributes: transformedAttributes,
       };
       formData.append("product", JSON.stringify(product));
       endpoint = "/offers/full";
     }
 
-    await axiosInstance
-      .post(endpoint, formData)
-      .then((response) => {
-        if (response.status === 201) {
-          toast({
-            title: "Sukces",
-            description: "Twoja oferta została dodana pomyślnie.",
-          });
-          form.reset();
-          setFiles([]);
-          setTitle("");
-          setCategory(null);
-          setSelectedProduct(null);
-          setAttributes([]);
-        }
-      })
-      .catch(() => {
-        toast({
-          variant: "destructive",
-          title: "Wystąpił błąd",
-          description: "Nie udało się dodać oferty.",
-        });
-      });
+    mutateCreateOffer({ endpoint, formData });
+
+    // await axiosInstance
+    //   .post(endpoint, formData)
+    //   .then((response) => {
+    //     if (response.status === 201) {
+    //       toast({
+    //         title: "Sukces",
+    //         description: "Twoja oferta została dodana pomyślnie.",
+    //       });
+    //       form.reset();
+    //       setImages([]);
+    //       // setTitle("");
+    //       setSelectedCategory(null);
+    //       setSelectedProduct(null);
+    //       setCategoryAttributes([]);
+    //     }
+    //   })
+    //   .catch(() => {
+    //     toast({
+    //       variant: "destructive",
+    //       title: "Wystąpił błąd",
+    //       description: "Nie udało się dodać oferty.",
+    //     });
+    //   });
   };
 
   useEffect(() => {
-    if (!categoryAttributes) return;
+    if (!categoryAttributesData) return;
 
-    const mapAttributes = categoryAttributes.map((categoryAttribute) => ({
+    const transformedAttributes = categoryAttributesData.map((categoryAttribute) => ({
       dbData: categoryAttribute,
       value: [""],
     }));
 
-    setAttributes(mapAttributes);
-  }, [categoryAttributes]);
+    setCategoryAttributes(transformedAttributes);
+    form.setValue("attributes", transformedAttributes.map(attribute => ({ productCategoryAttributeId: attribute.dbData.id, value: attribute.value })));
+  }, [categoryAttributesData]);
 
   return (
     <Form {...form}>
@@ -204,16 +272,45 @@ function CreateOfferForm() {
               </span>
             </CardTitle>
             <CardDescription>
-              Dodaj zdjęcia, maksymalnie 5, maksymalnie 5 MB
+              Dodaj zdjęcia, maksymalnie 5, maksymalnie 5 MB każde
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Input
-              type="file"
-              multiple
-              onChange={(e) => {
-                setFiles([...Array.from(e.target.files ?? [])]);
-              }}
+            <div className="grid grid-cols-2 min-[385px]:grid-cols-3 min-[530px]:grid-cols-5 gap-2 mb-5">
+              {images.map((image) => (
+                <img
+                  key={image.id}
+                  src={image.previewUrl}
+                  alt="preview"
+                  className="w-full object-cover object-center"
+                />
+              ))}
+            </div>
+            <FormField
+              control={form.control}
+              name="images"
+              render={({ field: { value, onChange, ...rest } }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input
+                      {...rest}
+                      type="file"
+                      multiple
+                      onChange={(e) => {
+                        // Clean up previous images
+                        images.forEach((image) =>
+                          URL.revokeObjectURL(image.previewUrl)
+                        );
+
+                        const files = Array.from(e.target.files ?? []);
+                        setImages(() => createImagesPreview(files));
+                        onChange(files);
+                      }}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
           </CardContent>
         </Card>
@@ -227,7 +324,8 @@ function CreateOfferForm() {
               </span>
             </CardTitle>
             <CardDescription>
-              Podaj tytuł oferty, im dokładniej, tym lepiej
+              Podaj tytuł oferty, im dokładniej, tym lepiej. Wymagane są co
+              najmniej 5 znaków.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -242,7 +340,6 @@ function CreateOfferForm() {
                       placeholder="Tytuł"
                       onChange={(e) => {
                         field.onChange(e);
-                        setTitle(e.target.value);
                       }}
                     />
                   </FormControl>
@@ -261,16 +358,23 @@ function CreateOfferForm() {
                 Kategoria <p className="text-red-500">*</p>
               </span>
             </CardTitle>
-            <CardDescription>Wybierz kategorię produktu</CardDescription>
+            <CardDescription>
+              Wybierz kategorię produktu. Propozycje pojawią się, gdy tytuł
+              posiada co najmniej 3 znaki.
+            </CardDescription>
           </CardHeader>
           <CardContent className="flex flex-col gap-5">
             <SuggestedCategories
               query={debouncedTitle}
               form={form}
-              category={category}
-              setCategory={setCategory}
+              category={selectedCategory}
+              setCategory={setSelectedCategory}
             />
-            <CategoriesList setCategory={setCategory} />
+            <CategoriesList
+              form={form}
+              category={selectedCategory}
+              setCategory={setSelectedCategory}
+            />
           </CardContent>
         </Card>
 
@@ -283,21 +387,23 @@ function CreateOfferForm() {
               </span>
             </CardTitle>
             <CardDescription>
-              Wybierz gotowy produkt z listy, dodaj nowy lub autouzupełnij pola
-              formularza na bazie wybranego produktu
+              {/* Wybierz gotowy produkt z listy, dodaj nowy lub autouzupełnij pola
+              formularza na bazie wybranego produktu */}
+              Wybierz produkt, skorzystaj z opcji autouzupełniania na bazie
+              produktu z listy, lub utwórz zupełnie nowy wprowadzając wymagane
+              cechy. Propozycje pojawią się na podstawie tytułu oraz wybranej
+              kategorii.
             </CardDescription>
           </CardHeader>
           <CardContent className="flex flex-col gap-2">
             <SuggestedProducts
               query={debouncedTitle}
-              categoryId={category?.id ?? null}
+              categoryId={watchCategoryId}
+              form={form}
               selectedProduct={selectedProduct}
               handleChangeSelectedProduct={handleChangeSelectedProduct}
               handleAutoFillClick={handleAutoFillClick}
             />
-            <RadioGroup
-              onValueChange={() => handleChangeSelectedProduct(null)}
-            ></RadioGroup>
           </CardContent>
         </Card>
 
@@ -315,7 +421,7 @@ function CreateOfferForm() {
           </CardHeader>
           <CardContent>
             <CategoryAttributes
-              data={attributes}
+              data={categoryAttributes}
               handleChangeAttributeValue={handleChangeAttributeValue}
               isSuggestedProductSelected={!!selectedProduct}
             />
@@ -427,7 +533,7 @@ function CreateOfferForm() {
           </CardContent>
         </Card>
 
-        <Button type="submit" className="w-full mb-5">
+        <Button type="submit" className="w-full mb-5" disabled={form.formState.isSubmitting}>
           Dodaj ofertę
         </Button>
       </form>

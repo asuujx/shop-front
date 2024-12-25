@@ -1,4 +1,4 @@
-import { Attribute } from "types";
+import { Input } from "@/components/ui/input";
 import { MultiSelect } from "@/components/ui/multi-select";
 import {
   Select,
@@ -7,7 +7,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
+import { Attribute } from "types";
 
 interface CategoryAttributesProps {
   data: {
@@ -37,7 +37,7 @@ function CategoryAttributes({
                 }
                 defaultValue={attribute.value[0] === "" ? [] : attribute.value}
                 value={attribute.value[0] === "" ? [] : attribute.value}
-                placeholder={attribute.dbData.name}
+                placeholder={`${attribute.dbData.name}${attribute.dbData.required ? " *" : ""}`}
                 disabled={isSuggestedProductSelected}
               />
             );
@@ -52,7 +52,7 @@ function CategoryAttributes({
                 disabled={isSuggestedProductSelected}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder={attribute.dbData.name} />
+                  <SelectValue placeholder={`${attribute.dbData.name}${attribute.dbData.required ? " *" : ""}`} />
                 </SelectTrigger>
                 <SelectContent>
                   {attribute.dbData.options.map((option) => (
@@ -68,7 +68,7 @@ function CategoryAttributes({
           return (
             <Input
               key={attribute.dbData.id}
-              placeholder={attribute.dbData.name}
+              placeholder={`${attribute.dbData.name}${attribute.dbData.required ? " *" : ""}`}
               value={attribute.value[0]}
               onChange={(e) =>
                 handleChangeAttributeValue(attribute.dbData.id, [
