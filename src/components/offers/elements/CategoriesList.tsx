@@ -1,8 +1,12 @@
 import axiosInstance from "@/lib/axios-instance";
+import { createOfferSchema } from "@/lib/schemas/createOfferSchema";
 import { useQuery } from "@tanstack/react-query";
+import clsx from "clsx";
 import { ChevronLeftIcon, ChevronRightIcon, List } from "lucide-react";
 import { useState } from "react";
+import { UseFormReturn } from "react-hook-form";
 import { Category } from "types";
+import { z } from "zod";
 import { Button } from "../../ui/button";
 import {
   Dialog,
@@ -13,6 +17,8 @@ import {
 } from "../../ui/dialog";
 
 interface CategoriesListProps {
+  form: UseFormReturn<z.infer<typeof createOfferSchema>>;
+  category: Category | null;
   setCategory: (category: Category) => void;
 }
 
@@ -21,11 +27,8 @@ const fetchBaseCategories = async () => {
   return response.data;
 };
 
-function CategoriesList({ setCategory }: CategoriesListProps) {
-  const {
-    data: categories,
-    status,
-  } = useQuery({
+function CategoriesList({ form, category, setCategory }: CategoriesListProps) {
+  const { data: categories, status } = useQuery({
     queryKey: ["categories", "base"],
     queryFn: fetchBaseCategories,
   });
@@ -41,6 +44,7 @@ function CategoriesList({ setCategory }: CategoriesListProps) {
       setSelectedCategoriesPath([...selectedCategoriesPath, category.id]);
       setSelectedCategories(category.children);
     } else {
+      form.setValue("categoryId", category.id);
       setCategory(category);
       setDialogOpen(false);
       setSelectedCategories(categories!);
@@ -105,7 +109,6 @@ function CategoriesList({ setCategory }: CategoriesListProps) {
           {selectedCategoriesPath.length > 0 && (
             <Button
               type="button"
-              
               onClick={handleBackClick}
               className="w-fit flex justify-start"
             >
@@ -114,16 +117,21 @@ function CategoriesList({ setCategory }: CategoriesListProps) {
             </Button>
           )}
 
-          {selectedCategories.map((category: Category) => (
+          {selectedCategories.map((_category: Category) => (
             <Button
-              key={category.id}
+              key={_category.id}
               type="button"
               variant="ghost"
-              onClick={() => handleCategoryClick(category)}
-              className="flex items-center justify-between"
+              onClick={() => handleCategoryClick(_category)}
+              className={clsx(
+                category &&
+                _category.id === category.id &&
+                "bg-primary-foreground outline",
+                "flex items-center justify-between"
+              )}
             >
-              {category.name}
-              {!!category?.children.length && <ChevronRightIcon />}
+              {_category.name}
+              {!!_category?.children.length && <ChevronRightIcon />}
             </Button>
           ))}
         </DialogContent>
