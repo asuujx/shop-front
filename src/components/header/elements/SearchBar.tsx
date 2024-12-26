@@ -3,7 +3,7 @@ import { SearchIcon } from 'lucide-react';
 
 function SearchBar() {
   return (
-    <div className="flex items-center w-full max-w-md space-x-2 rounded-lg border px-4 py-2">
+    <div className="flex items-center w-full space-x-2 rounded-lg border px-4 py-2">
       <SearchIcon className="h-4 w-4" />
       <Input
         type="search"

@@ -63,6 +63,7 @@ export interface ProductAttribute {
   categoryAttributeId: string;
   name: string;
   value: string;
+  required: boolean;
   options: {
     id: string;
     value: string;
