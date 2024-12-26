@@ -5,6 +5,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import ProductConfirmation from "./ProductConfirmation";
 
 const Products = () => {
   return (
@@ -15,7 +16,9 @@ const Products = () => {
           Formularze umożliwiające wykonywanie operacji na produktach.
         </CardDescription>
       </CardHeader>
-      <CardContent></CardContent>
+      <CardContent>
+        <ProductConfirmation />
+      </CardContent>
     </Card>
   );
 };

@@ -51,7 +51,7 @@ const ProductConfirmation = () => {
 
   return (
     <div>
-      <h2 className="text-xl font-semibold">Oczekujące na zatwierdzenie</h2>
+      <h2 className="text-xl font-semibold mb-1">Oczekujące na zatwierdzenie</h2>
       {!isReady && <p>Ładowanie...</p>}
       {isReady && pendingProductsData.length === 0 && (
         <p>Brak produktów do zatwierdzenia</p>
