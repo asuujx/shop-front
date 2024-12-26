@@ -219,30 +219,6 @@ function CreateOfferForm() {
     }
 
     mutateCreateOffer({ endpoint, formData });
-
-    // await axiosInstance
-    //   .post(endpoint, formData)
-    //   .then((response) => {
-    //     if (response.status === 201) {
-    //       toast({
-    //         title: "Sukces",
-    //         description: "Twoja oferta została dodana pomyślnie.",
-    //       });
-    //       form.reset();
-    //       setImages([]);
-    //       // setTitle("");
-    //       setSelectedCategory(null);
-    //       setSelectedProduct(null);
-    //       setCategoryAttributes([]);
-    //     }
-    //   })
-    //   .catch(() => {
-    //     toast({
-    //       variant: "destructive",
-    //       title: "Wystąpił błąd",
-    //       description: "Nie udało się dodać oferty.",
-    //     });
-    //   });
   };
 
   useEffect(() => {
@@ -263,7 +239,7 @@ function CreateOfferForm() {
         onSubmit={form.handleSubmit(onSubmit)}
         className="w-full max-w-lg flex flex-col gap-5"
       >
-        {/* Zdjecia */}
+        {/* Photos */}
         <Card>
           <CardHeader>
             <CardTitle>
@@ -282,7 +258,7 @@ function CreateOfferForm() {
                   key={image.id}
                   src={image.previewUrl}
                   alt="preview"
-                  className="w-full object-cover object-center"
+                  className="w-full rounded-md object-cover object-center"
                 />
               ))}
             </div>
@@ -315,7 +291,7 @@ function CreateOfferForm() {
           </CardContent>
         </Card>
 
-        {/* Tytul oferty */}
+        {/* Title */}
         <Card>
           <CardHeader>
             <CardTitle>
@@ -350,7 +326,7 @@ function CreateOfferForm() {
           </CardContent>
         </Card>
 
-        {/* Kategoria */}
+        {/* Categories */}
         <Card>
           <CardHeader>
             <CardTitle>
@@ -378,7 +354,7 @@ function CreateOfferForm() {
           </CardContent>
         </Card>
 
-        {/* Produkty */}
+        {/* Products */}
         <Card>
           <CardHeader>
             <CardTitle>
@@ -387,8 +363,6 @@ function CreateOfferForm() {
               </span>
             </CardTitle>
             <CardDescription>
-              {/* Wybierz gotowy produkt z listy, dodaj nowy lub autouzupełnij pola
-              formularza na bazie wybranego produktu */}
               Wybierz produkt, skorzystaj z opcji autouzupełniania na bazie
               produktu z listy, lub utwórz zupełnie nowy wprowadzając wymagane
               cechy. Propozycje pojawią się na podstawie tytułu oraz wybranej
@@ -407,7 +381,7 @@ function CreateOfferForm() {
           </CardContent>
         </Card>
 
-        {/* Cechy produktu */}
+        {/* Product attributes */}
         <Card>
           <CardHeader>
             <CardTitle>
@@ -428,7 +402,7 @@ function CreateOfferForm() {
           </CardContent>
         </Card>
 
-        {/* Opis */}
+        {/* Description */}
         <Card>
           <CardHeader>
             <CardTitle>
@@ -457,7 +431,7 @@ function CreateOfferForm() {
           </CardContent>
         </Card>
 
-        {/* Cena */}
+        {/* Price */}
         <Card>
           <CardHeader>
             <CardTitle>
@@ -487,7 +461,7 @@ function CreateOfferForm() {
           </CardContent>
         </Card>
 
-        {/* Stan */}
+        {/* Product state */}
         <Card>
           <CardHeader>
             <CardTitle>
@@ -518,7 +492,7 @@ function CreateOfferForm() {
                             <Label htmlFor={state.id} className="font-semibold">
                               {state.name}
                             </Label>
-                            <p className="text-xs text-gray-600">
+                            <p className="text-xs text-muted-foreground">
                               {state.description}
                             </p>
                           </div>
@@ -533,6 +507,7 @@ function CreateOfferForm() {
           </CardContent>
         </Card>
 
+        {/* Submit */}
         <Button type="submit" className="w-full mb-5" disabled={form.formState.isSubmitting}>
           Dodaj ofertę
         </Button>
