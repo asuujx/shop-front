@@ -1,13 +1,21 @@
-import { FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "@/components/ui/form";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import axiosInstance from "@/lib/axios-instance";
+import { createOfferSchema } from "@/lib/schemas/createOfferSchema";
 import { useQuery } from "@tanstack/react-query";
+import { UseFormReturn } from "react-hook-form";
 import { Category } from "types";
+import { z } from "zod";
 
 interface SuggestedCategoriesProps {
   query: string;
-  form: any;
+  form: UseFormReturn<z.infer<typeof createOfferSchema>>;
   category: Category | null;
   setCategory: (category: Category) => void;
 }
@@ -19,8 +27,13 @@ const fetchCategories = async (query: string) => {
   return response.data;
 };
 
-function SuggestedCategories({ query, form, category, setCategory }: SuggestedCategoriesProps) {
-  const { data: categories } = useQuery({
+function SuggestedCategories({
+  query,
+  form,
+  category,
+  setCategory,
+}: SuggestedCategoriesProps) {
+  const categoriesQuery = useQuery({
     queryKey: ["categories", "suggested", query],
     queryFn: () => fetchCategories(query),
     enabled: query.length >= 3,
@@ -29,39 +42,65 @@ function SuggestedCategories({ query, form, category, setCategory }: SuggestedCa
   return (
     <FormField
       control={form.control}
-      name="category"
+      name="categoryId"
       render={({ field }) => (
         <FormItem>
           <FormControl>
             <RadioGroup
+              defaultValue={category?.id ?? "(null)"}
+              value={category?.id ?? "(null)"}
               onValueChange={(value) => {
+                if (categoriesQuery.data === undefined) return;
+                setCategory(
+                  categoriesQuery.data?.find(
+                    (category) => category.id === value
+                  )!
+                );
                 field.onChange(value);
-                setCategory(categories!.find(category => category.id === value)!);
               }}
-              defaultValue={category?.id}
-              value={category?.id}
-              className="flex flex-col gap-5"
+              className="flex flex-col gap-2"
             >
-              {category && <div
-                  className="flex items-center gap-2 border rounded-lg px-2 py-4"
-                  key={category.id}
-                >
-                  <RadioGroupItem value={category.id} id={category.id} />
-                  <Label htmlFor={category.id}>
-                    {category.name}
-                  </Label>
-                </div>}
-              {categories?.filter(_category => _category.id !== (category?.id ?? false)).map((category: any) => (
+              {category && (
                 <div
                   className="flex items-center gap-2 border rounded-lg px-2 py-4"
                   key={category.id}
                 >
                   <RadioGroupItem value={category.id} id={category.id} />
-                  <Label htmlFor={category.id}>
-                    {category.name}
-                  </Label>
+                  <Label htmlFor={category.id}>{category.name}</Label>
                 </div>
-              ))}
+              )}
+              {categoriesQuery.data
+                ?.filter(
+                  (_category) => _category.id !== (category?.id ?? false)
+                )
+                .map((category: any) => (
+                  <div
+                    className="flex items-center gap-2 border rounded-lg px-2 py-4"
+                    key={category.id}
+                  >
+                    <RadioGroupItem value={category.id} id={category.id} />
+                    <Label htmlFor={category.id}>{category.name}</Label>
+                  </div>
+                ))}
+              {categoriesQuery.isLoading && (
+                <div>
+                  <p>Wczytywanie sugestii..</p>
+                </div>
+              )}
+              {categoriesQuery.isError && (
+                <div>
+                  <p className="text-destructive">
+                    Wystąpił błąd podczas pobierania sugestii
+                  </p>
+                </div>
+              )}
+              <div
+                className="flex items-center gap-2 border rounded-lg px-2 py-4"
+                key={"(null)"}
+              >
+                <RadioGroupItem value={"(null)"} id={"(null)"} />
+                <Label htmlFor={"(null)"}>Nie wybrano kategorii</Label>
+              </div>
             </RadioGroup>
           </FormControl>
           <FormMessage />
