@@ -1,5 +1,6 @@
 import Categories from "./categories/Categories";
 import Offers from "./offers/Offers";
+import Products from "./products/Products";
 
 const Admin = () => {
   return (
@@ -12,12 +13,12 @@ const Admin = () => {
           <section id="categories">
             <Categories />
           </section>
+          <section id="products">
+            <Products />
+          </section>
           <section id="offers">
             <Offers />
           </section>
-          {/* <section id="products">
-            <Products />
-          </section> */}
         </div>
       </div>
     </div>
