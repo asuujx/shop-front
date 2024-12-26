@@ -126,7 +126,7 @@ function CategoriesList({ form, category, setCategory }: CategoriesListProps) {
               className={clsx(
                 category &&
                 _category.id === category.id &&
-                "bg-primary-foreground outline",
+                "bg-primary text-primary-foreground",
                 "flex items-center justify-between"
               )}
             >
