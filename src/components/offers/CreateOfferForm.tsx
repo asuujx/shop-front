@@ -15,6 +15,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { useDebounce } from "@uidotdev/usehooks";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 import { Attribute, Category, Product } from "types";
 import { z } from "zod";
 import { Button } from "../ui/button";
@@ -44,7 +45,13 @@ const fetchOfferStates = async () => {
   return response.data;
 };
 
-const createOfferMutationFn = async ({ endpoint, formData }: { endpoint: string, formData: FormData }) => {
+const createOfferMutationFn = async ({
+  endpoint,
+  formData,
+}: {
+  endpoint: string;
+  formData: FormData;
+}) => {
   const response = await axiosInstance.post(endpoint, formData);
   return response.data;
 };
@@ -66,14 +73,15 @@ function CreateOfferForm() {
       price: 1,
       categoryId: "(null)",
       productId: "(null)",
-      productStateId: "",
-      attributes: []
+      productStateId: "(null)",
+      attributes: [],
     },
   });
 
   const watchTitle = form.watch("title");
   const watchCategoryId = form.watch("categoryId");
   const debouncedTitle = useDebounce(watchTitle, 500);
+  const navigate = useNavigate();
 
   const [images, setImages] = useState<{ id: string; previewUrl: string }[]>(
     []
@@ -98,16 +106,12 @@ function CreateOfferForm() {
   const { mutate: mutateCreateOffer } = useMutation({
     mutationKey: ["createOffer"],
     mutationFn: createOfferMutationFn,
-    onSuccess: () => {
+    onSuccess: (response) => {
       toast({
         title: "Sukces",
         description: "Twoja oferta została dodana pomyślnie.",
       });
-      form.reset();
-      setImages([]);
-      setSelectedCategory(null);
-      setSelectedProduct(null);
-      setCategoryAttributes([]);
+      navigate(`/offers/${response.id}`);
     },
     onError: () => {
       toast({
@@ -115,8 +119,8 @@ function CreateOfferForm() {
         title: "Wystąpił błąd",
         description: "Nie udało się dodać oferty.",
       });
-    }
-  })
+    },
+  });
 
   const { data: offerStates } = useQuery({
     queryKey: ["offerStates"],
@@ -128,7 +132,13 @@ function CreateOfferForm() {
       attribute.dbData.id === id ? { ...attribute, value } : attribute
     );
 
-    form.setValue("attributes", updatedAttributes.map(attribute => ({ productCategoryAttributeId: attribute.dbData.id, value: attribute.value })));
+    form.setValue(
+      "attributes",
+      updatedAttributes.map((attribute) => ({
+        productCategoryAttributeId: attribute.dbData.id,
+        value: attribute.value,
+      }))
+    );
     setCategoryAttributes([...updatedAttributes]);
   };
 
@@ -139,7 +149,13 @@ function CreateOfferForm() {
         value: [""],
       }));
       setCategoryAttributes(() => [...updatedAttributes]);
-      form.setValue("attributes", updatedAttributes.map(attribute => ({ productCategoryAttributeId: attribute.dbData.id, value: attribute.value })));
+      form.setValue(
+        "attributes",
+        updatedAttributes.map((attribute) => ({
+          productCategoryAttributeId: attribute.dbData.id,
+          value: attribute.value,
+        }))
+      );
     } else {
       const updatedAttributes = categoryAttributes.map((attribute) => {
         const productAttribute = product.attributes.find(
@@ -147,15 +163,23 @@ function CreateOfferForm() {
             productAttribute.categoryAttributeId === attribute.dbData.id
         );
         const value = productAttribute
-          ? (productAttribute?.value
+          ? productAttribute?.value
             ? [productAttribute.value]
-            : (productAttribute.options.length > 0 ? productAttribute.options.map((option) => option.id) : [""]))
+            : productAttribute.options.length > 0
+            ? productAttribute.options.map((option) => option.id)
+            : [""]
           : [""];
 
         return { ...attribute, value };
       });
       setCategoryAttributes(() => [...updatedAttributes]);
-      form.setValue("attributes", updatedAttributes.map(attribute => ({ productCategoryAttributeId: attribute.dbData.id, value: attribute.value })));
+      form.setValue(
+        "attributes",
+        updatedAttributes.map((attribute) => ({
+          productCategoryAttributeId: attribute.dbData.id,
+          value: attribute.value,
+        }))
+      );
     }
   };
 
@@ -176,15 +200,16 @@ function CreateOfferForm() {
 
     // Attribute validation
     const missingRequiredAttributes = categoryAttributes.filter(
-      (attribute) =>
-        attribute.dbData.required && attribute.value[0] === ""
+      (attribute) => attribute.dbData.required && attribute.value[0] === ""
     );
 
     if (missingRequiredAttributes.length > 0 && !selectedProduct) {
       toast({
         variant: "destructive",
         title: "Błąd",
-        description: `Uzupełnij wszystkie wymagane cechy produktu: ${missingRequiredAttributes.map((attribute) => attribute.dbData.name).join(", ")}.`,
+        description: `Uzupełnij wszystkie wymagane cechy produktu: ${missingRequiredAttributes
+          .map((attribute) => attribute.dbData.name)
+          .join(", ")}.`,
       });
 
       return;
@@ -207,7 +232,9 @@ function CreateOfferForm() {
       formData.append("productId", values.productId);
       endpoint = "/offers";
     } else {
-      const transformedAttributes = values.attributes.filter(attribute => attribute.value[0] !== "");
+      const transformedAttributes = values.attributes.filter(
+        (attribute) => attribute.value[0] !== ""
+      );
       const product = {
         name: values.title,
         description: values.description,
@@ -224,13 +251,21 @@ function CreateOfferForm() {
   useEffect(() => {
     if (!categoryAttributesData) return;
 
-    const transformedAttributes = categoryAttributesData.map((categoryAttribute) => ({
-      dbData: categoryAttribute,
-      value: [""],
-    }));
+    const transformedAttributes = categoryAttributesData.map(
+      (categoryAttribute) => ({
+        dbData: categoryAttribute,
+        value: [""],
+      })
+    );
 
     setCategoryAttributes(transformedAttributes);
-    form.setValue("attributes", transformedAttributes.map(attribute => ({ productCategoryAttributeId: attribute.dbData.id, value: attribute.value })));
+    form.setValue(
+      "attributes",
+      transformedAttributes.map((attribute) => ({
+        productCategoryAttributeId: attribute.dbData.id,
+        value: attribute.value,
+      }))
+    );
   }, [categoryAttributesData]);
 
   return (
@@ -498,6 +533,12 @@ function CreateOfferForm() {
                           </div>
                         </div>
                       ))}
+                      <div className="flex gap-2 items-center border px-2 py-4 rounded-lg">
+                        <RadioGroupItem value="(null)" />
+                        <Label htmlFor="(null)">
+                          Nie wybrano stanu produktu
+                        </Label>
+                      </div>
                     </RadioGroup>
                   </FormControl>
                   <FormMessage />
@@ -508,7 +549,11 @@ function CreateOfferForm() {
         </Card>
 
         {/* Submit */}
-        <Button type="submit" className="w-full mb-5" disabled={form.formState.isSubmitting}>
+        <Button
+          type="submit"
+          className="w-full mb-5"
+          disabled={form.formState.isSubmitting}
+        >
           Dodaj ofertę
         </Button>
       </form>
