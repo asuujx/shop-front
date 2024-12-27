@@ -62,7 +62,7 @@ function ProductOffersSheet({ productId }: ProductOffersSheetProps) {
               <SelectValue placeholder="Sortuj" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="name">Nazwa</SelectItem>
+              <SelectItem value="price">Cena</SelectItem>
               <SelectItem value="createdAt">Data dodania</SelectItem>
               <SelectItem value="updatedAt">Data modyfikacji</SelectItem>
             </SelectContent>
