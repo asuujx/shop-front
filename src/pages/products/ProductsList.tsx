@@ -48,7 +48,7 @@ function ProductsList() {
         {isCategoryFetching ? <Skeleton /> : category.name}
       </h1>
 
-      <div className="w-full mb-10 grid grid-cols-1 gap-5 md:grid-cols-2">
+      <div className="w-full mb-5 grid grid-cols-1 gap-5 md:grid-cols-2">
         {/* Sorting */}
         <Select onValueChange={(value) => setSort(value)}>
           <SelectTrigger>
@@ -77,7 +77,7 @@ function ProductsList() {
         {products?.map((product: Product) => (
           <Link to={`/products/${product.id}`} key={product.id}>
             <Card>
-              <CardContent className="flex p-5">
+              <CardContent className="flex gap-5 p-5">
                 <div>
                   {product.images.length > 0 && (
                     <img
@@ -91,13 +91,13 @@ function ProductsList() {
                   )}
                 </div>
                 <div>
-                  <CardTitle>{product.name}</CardTitle>
+                  <CardTitle className="mb-2">{product.name}</CardTitle>
 
-                  <div className="">
+                  <div className="flex flex-col">
                     {product.attributes
                       .filter((attribute) => attribute.required)
                       .map((attribute) => (
-                        <span key={attribute.id} className="flex gap-1">
+                        <span key={attribute.id} className="flex gap-2">
                           <p className="text-muted-foreground">
                             {attribute.name}:
                           </p>
