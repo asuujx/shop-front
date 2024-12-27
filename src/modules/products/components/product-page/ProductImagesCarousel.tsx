@@ -18,9 +18,8 @@ function ProductImagesCarousel({ product }: ProductImagesCarouselProps) {
         <Carousel className="mx-14 w-full max-w-xs">
           <CarouselContent>
             {product.images.map((image) => (
-              <CarouselItem>
+              <CarouselItem key={image.id}>
                 <img
-                  key={image.id}
                   src={`${import.meta.env.VITE_API_BASE_URL}/${image.url}`}
                   crossOrigin="anonymous"
                   className="w-80 h-80 object-cover rounded-lg"
