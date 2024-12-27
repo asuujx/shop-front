@@ -15,7 +15,7 @@ import { Product } from "types";
 
 const fetchProducts = async (categoryId: string, sort: string, order: string) => {
   const response = await axiosInstance.get<Product[]>(
-    `/products?filter=categoryId:eq:${categoryId}&sort=${sort}:${order}`
+    `/products/approved?filter=categoryId:eq:${categoryId}&sort=${sort}:${order}`
   );
   return response.data;
 };

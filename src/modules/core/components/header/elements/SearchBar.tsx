@@ -9,7 +9,7 @@ import { Button } from "../../ui/button";
 
 const fetchProducts = async (search: string) => {
   const response = await axiosInstance.get<Product[]>(
-    `/products?filter=name:like:${search}`
+    `/products/approved?filter=name:like:${search}`
   );
   return response.data;
 };
