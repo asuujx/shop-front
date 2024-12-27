@@ -1,18 +1,18 @@
-import Admin from "@/pages/admin/admin";
-import App from "@/pages/App";
-import Login from "@/pages/auth/Login";
-import ResetPassword from "@/pages/auth/ResetPassword";
-import SignUp from "@/pages/auth/SignUp";
-import Verify from "@/pages/auth/Verify";
-import Home from "@/pages/home/Home";
-import CreateOffer from "@/pages/offers/CreateOffer";
-import Offer from "@/pages/offers/OfferPage";
-import OffersList from "@/pages/offers/OffersList";
-import Product from "@/pages/products/ProductPage";
-import ProductsList from "@/pages/products/ProductsList";
-import User from "@/pages/user/User";
-import UserOffers from "@/pages/user/UserOffers";
-import UserOrders from "@/pages/user/UserOrders";
+import Admin from "@/modules/admin/admin";
+import App from "@/modules/core/pages/App";
+import Login from "@/modules/auth/pages/Login";
+import ResetPassword from "@/modules/auth/pages/ResetPassword";
+import SignUp from "@/modules/auth/pages/SignUp";
+import Verify from "@/modules/auth/pages/Verify";
+import Home from "@/modules/home/pages/Home";
+import CreateOffer from "@/modules/offers/pages/CreateOffer";
+import Offer from "@/modules/offers/pages/OfferPage";
+import OffersList from "@/modules/offers/pages/OffersList";
+import Product from "@/modules/products/pages/ProductPage";
+import ProductsList from "@/modules/products/pages/ProductsList";
+import User from "@/modules/user/pages/User";
+import UserOffers from "@/modules/user/pages/UserOffers";
+import UserOrders from "@/modules/user/pages/UserOrders";
 import { createBrowserRouter, Outlet } from "react-router-dom";
 
 export const router = createBrowserRouter([
