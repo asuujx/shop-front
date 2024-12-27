@@ -73,10 +73,10 @@ function ProductsList() {
         </Select>
       </div>
 
-      <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+      <div className="grid grid-cols-1 auto-rows-fr gap-5 md:grid-cols-2">
         {products?.map((product: Product) => (
-          <Link to={`/products/${product.id}`} key={product.id}>
-            <Card>
+          <Card key={product.id}>
+            <Link to={`/products/${product.id}`}>
               <CardContent className="flex gap-5 p-5">
                 <div>
                   {product.images.length > 0 && (
@@ -107,8 +107,8 @@ function ProductsList() {
                   </div>
                 </div>
               </CardContent>
-            </Card>
-          </Link>
+            </Link>
+          </Card>
         ))}
       </div>
     </div>
