@@ -1,9 +1,9 @@
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/modules/core/components/ui/carousel";
 import axiosInstance from "@/modules/core/lib/axios-instance";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import { Product } from "types";
 import ProductOffersSheet from "../components/ProductOffersSheet";
+import ProductImagesCarousel from "../components/product-page/ProductImagesCarousel";
 
 const fetchProduct = async (productId: string) => {
   const response = await axiosInstance.get<Product>(`/products/${productId}`);
@@ -24,29 +24,7 @@ function ProductPage() {
         <div>
           <div className="flex flex-wrap gap-5">
             {/* Images */}
-            <div>
-              {product.images.length > 0 && (
-                <Carousel className="mx-14 w-full max-w-xs">
-                  <CarouselContent>
-                    <CarouselItem>
-                      {product.images.map((image) => (
-                        <img
-                          key={image.id}
-                          src={`${import.meta.env.VITE_API_BASE_URL}/${
-                            image.url
-                          }`}
-                          crossOrigin="anonymous"
-                          className="w-80 h-80 object-cover rounded-lg"
-                          alt={product.name}
-                        />
-                      ))}
-                    </CarouselItem>
-                  </CarouselContent>
-                  <CarouselPrevious className="hidden md:block" />
-                  <CarouselNext className="hidden md:block" />
-                </Carousel>
-              )}
-            </div>
+              <ProductImagesCarousel product={product} />
 
             <div>
               <h1 className="mb-5 text-4xl font-semibold">{product.name}</h1>
