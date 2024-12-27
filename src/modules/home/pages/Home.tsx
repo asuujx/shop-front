@@ -1,7 +1,5 @@
 import OffersCarousel from "../components/OffersCarousel";
 
-
-
 function Home() {
   return (
     <div className="mt-20 max-w-screen-xl mx-auto">

@@ -8,7 +8,7 @@ import { Offer } from "types";
 
 const fetchOffers = async () => {
   const response = await axiosInstance.get<Offer[]>(
-    "/offers?sort=createdAt:desc"
+    "/offers?filter=status:eq:active&sort=createdAt:desc"
   );
   return response.data;
 };
