@@ -70,7 +70,7 @@ function LoginForm() {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="w-full max-w-md flex flex-col gap-5"
+        className="w-full flex flex-col gap-5"
       >
         <FormField
           name="email"
