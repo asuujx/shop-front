@@ -114,3 +114,22 @@ export interface Offer {
   createdAt: string;
   updatedAt: string;
 }
+
+export enum OrderStatus {
+  PENDING = "pending",
+  PAID = "paid",
+  CANCELLED = "canceled",
+  SHIPPED = "shipped",
+  DELIVERED = "delivered",
+}
+
+export interface Order {
+  id: string;
+  status: OrderStatus;
+  cancelReason: string | null;
+  trackingNumber: string | null;
+  createdAt: string;
+  updatedAt: string;
+  offerId: string;
+  deliveryAddressId: string;
+}

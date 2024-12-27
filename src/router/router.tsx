@@ -11,6 +11,8 @@ import OffersList from "@/pages/offers/OffersList";
 import Product from "@/pages/products/ProductPage";
 import ProductsList from "@/pages/products/ProductsList";
 import User from "@/pages/user/User";
+import UserOffers from "@/pages/user/UserOffers";
+import UserOrders from "@/pages/user/UserOrders";
 import { createBrowserRouter, Outlet } from "react-router-dom";
 
 export const router = createBrowserRouter([
@@ -40,7 +42,21 @@ export const router = createBrowserRouter([
       },
       {
         path: "user",
-        element: <User />,
+        element: <Outlet />,
+        children: [
+          {
+            index: true,
+            element: <User />,
+          },
+          {
+            path: "offers",
+            element: <UserOffers />,
+          },
+          {
+            path: "orders",
+            element: <UserOrders />,
+          }
+        ]
       },
       {
         path: "offers",
