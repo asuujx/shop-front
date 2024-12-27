@@ -1,15 +1,9 @@
 import { Button } from "@/modules/core/components/ui/button";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/modules/core/components/ui/carousel";
 import axiosInstance from "@/modules/core/lib/axios-instance";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import { Offer } from "types";
+import OfferImagesCarousel from "../components/offer-page/OfferImagesCarousel";
 
 const fetchOffer = async (offerId: string) => {
   const response = await axiosInstance.get<Offer>(`/offers/${offerId}`);
@@ -30,29 +24,7 @@ function OfferPage() {
         <div>
           <div className="flex flex-wrap gap-5">
             {/* Images */}
-            <div>
-              {offer.images.length > 0 && (
-                <Carousel className="mx-14 w-full max-w-xs">
-                  <CarouselContent>
-                    <CarouselItem>
-                      {offer.images.map((image) => (
-                        <img
-                          key={image.id}
-                          src={`${import.meta.env.VITE_API_BASE_URL}/${
-                            image.url
-                          }`}
-                          crossOrigin="anonymous"
-                          className="w-80 h-80 object-cover rounded-lg"
-                          alt={offer.product.name}
-                        />
-                      ))}
-                    </CarouselItem>
-                  </CarouselContent>
-                  <CarouselPrevious className="hidden md:block" />
-                  <CarouselNext className="hidden md:block" />
-                </Carousel>
-              )}
-            </div>
+            <OfferImagesCarousel offer={offer} />
 
             <div>
               {/* Title */}
@@ -71,6 +43,7 @@ function OfferPage() {
                 </div>
               </div>
 
+              {/* Author */}
               <p className="font-semibold">Użytkownik</p>
               <div className="mb-5">
                 <div className="flex gap-2">
