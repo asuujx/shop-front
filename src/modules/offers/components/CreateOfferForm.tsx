@@ -28,10 +28,10 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { Attribute, Category, Product } from "types";
 import { z } from "zod";
-import CategoriesList from "./elements/CategoriesList";
-import CategoryAttributes from "./elements/CategoryAttributes";
-import SuggestedCategories from "./elements/SuggestedCategories";
-import SuggestedProducts from "./elements/SuggestedProducts";
+import CategoriesList from "./create-offer-form/CategoriesList";
+import CategoryAttributes from "./create-offer-form/CategoryAttributes";
+import SuggestedCategories from "./create-offer-form/SuggestedCategories";
+import SuggestedProducts from "./create-offer-form/SuggestedProducts";
 
 const fetchCategoryAttributes = async (categoryId: string) => {
   const response = await axiosInstance.get(
