@@ -1,7 +1,7 @@
 import { isStrongPassword } from "validator";
 import { z } from "zod";
 
-export const signUpPersonalSchema = z
+export const signUpSchema = z
   .object({
     firstName: z.string().min(1, { message: "Imię jest wymagane" }),
     lastName: z.string().min(1, { message: "Nazwisko jest wymagane" }),

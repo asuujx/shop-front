@@ -1,6 +1,6 @@
-import { signUpBusinessSchema } from "@/modules/auth/schemas/signUpBusinessSchema";
 import { CircleCheck } from "lucide-react";
 import { useEffect, useState } from "react";
+import { signUpSchema } from "../../schemas/signUpSchema";
 
 interface StrongPasswordInformationProps {
   password: string;
@@ -20,7 +20,7 @@ function StrongPasswordInformation({
   }, [password]);
 
   const validatePassword = (password: string) => {
-    const result = signUpBusinessSchema.safeParse(password);
+    const result = signUpSchema.safeParse(password);
     setIsEightCharacters(result.success || password.length >= 8);
     setHasNumber(result.success || /\d/.test(password));
     setHasUppercase(result.success || /[A-Z]/.test(password));

@@ -1,4 +1,4 @@
-import { signUpPersonalSchema } from "@/modules/auth/schemas/signUpPersonalSchema";
+import { signUpSchema } from "@/modules/auth/schemas/signUpSchema";
 import { useToast } from "@/modules/core/hooks/use-toast";
 import axiosInstance from "@/modules/core/lib/axios-instance";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -13,7 +13,7 @@ import { Input } from "@/modules/core/components/ui/input";
 import StrongPasswordInformation from "../password/StrongPasswordInformation";
 import SignUpDialog from "./SignUpDialog";
 
-function SignUpPersonalForm() {
+function SignUpForm() {
   const [open, setOpen] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -21,8 +21,8 @@ function SignUpPersonalForm() {
 
   const { toast } = useToast();
 
-  const form = useForm<z.infer<typeof signUpPersonalSchema>>({
-    resolver: zodResolver(signUpPersonalSchema),
+  const form = useForm<z.infer<typeof signUpSchema>>({
+    resolver: zodResolver(signUpSchema),
     defaultValues: {
       firstName: "",
       lastName: "",
@@ -32,7 +32,7 @@ function SignUpPersonalForm() {
     },
   });
 
-  const onSubmit = (values: z.infer<typeof signUpPersonalSchema>) => {
+  const onSubmit = (values: z.infer<typeof signUpSchema>) => {
     axiosInstance
       .post("/auth/basic/signup/personal", values)
       .then((response) => {
@@ -61,7 +61,7 @@ function SignUpPersonalForm() {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="w-full max-w-lg flex flex-col gap-5"
+        className="w-full flex flex-col gap-5"
       >
         <div className="flex justify-between gap-2">
           <FormField
@@ -163,4 +163,4 @@ function SignUpPersonalForm() {
   );
 }
 
-export default SignUpPersonalForm;
+export default SignUpForm;
