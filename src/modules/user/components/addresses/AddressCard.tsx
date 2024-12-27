@@ -12,8 +12,8 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogTrigger,
 } from "@/modules/core/components/ui/dialog";
-import { DialogTrigger } from "@radix-ui/react-dialog";
 import { useState } from "react";
 import { Address } from "types";
 import AddressEditForm from "./AddressEditForm";

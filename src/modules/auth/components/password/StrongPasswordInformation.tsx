@@ -34,7 +34,7 @@ function StrongPasswordInformation({
     <div className="flex flex-col gap-1 text-sm">
       <div
         className={`flex gap-1 items-center ${
-          isEightCharacters ? "text-green-500" : "text-gray-500"
+          isEightCharacters ? "text-primary" : "text-muted-foreground"
         }`}
       >
         <CircleCheck size={18} />
@@ -42,7 +42,7 @@ function StrongPasswordInformation({
       </div>
       <div
         className={`flex gap-1 items-center ${
-          hasNumber ? "text-green-500" : "text-gray-500"
+          hasNumber ? "text-primary" : "text-muted-foreground"
         }`}
       >
         <CircleCheck size={18} />
@@ -50,7 +50,7 @@ function StrongPasswordInformation({
       </div>
       <div
         className={`flex gap-1 items-center ${
-          hasUppercase ? "text-green-500" : "text-gray-500"
+          hasUppercase ? "text-primary" : "text-muted-foreground"
         }`}
       >
         <CircleCheck size={18} />
@@ -58,7 +58,7 @@ function StrongPasswordInformation({
       </div>
       <div
         className={`flex gap-1 items-center ${
-          hasLowercase ? "text-green-500" : "text-gray-500"
+          hasLowercase ? "text-primary" : "text-muted-foreground"
         }`}
       >
         <CircleCheck size={18} />
@@ -66,7 +66,7 @@ function StrongPasswordInformation({
       </div>
       <div
         className={`flex gap-1 items-center ${
-          hasSpecialCharacter ? "text-green-500" : "text-gray-500"
+          hasSpecialCharacter ? "text-primary" : "text-muted-foreground"
         }`}
       >
         <CircleCheck size={18} />

@@ -1,12 +1,11 @@
 import { Button } from "@/modules/core/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/modules/core/components/ui/form";
 import { Input } from "@/modules/core/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger } from "@/modules/core/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/modules/core/components/ui/select";
 import { toast } from "@/modules/core/hooks/use-toast";
 import axiosInstance from "@/modules/core/lib/axios-instance";
 import { addressSchema } from "@/modules/user/schemas/addressSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { SelectValue } from "@radix-ui/react-select";
 import { useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
