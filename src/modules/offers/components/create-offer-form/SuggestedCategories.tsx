@@ -17,7 +17,8 @@ interface SuggestedCategoriesProps {
   query: string;
   form: UseFormReturn<z.infer<typeof createOfferSchema>>;
   category: Category | null;
-  setCategory: (category: Category) => void;
+  // setCategory: (category: Category) => void;
+  handleChangeSelectedCategory: (category: Category | null) => void;
 }
 
 const fetchCategories = async (query: string) => {
@@ -31,7 +32,7 @@ function SuggestedCategories({
   query,
   form,
   category,
-  setCategory,
+  handleChangeSelectedCategory
 }: SuggestedCategoriesProps) {
   const categoriesQuery = useQuery({
     queryKey: ["categories", "suggested", query],
@@ -51,11 +52,7 @@ function SuggestedCategories({
               value={category?.id ?? "(null)"}
               onValueChange={(value) => {
                 if (categoriesQuery.data === undefined) return;
-                setCategory(
-                  categoriesQuery.data?.find(
-                    (category) => category.id === value
-                  )!
-                );
+                handleChangeSelectedCategory(value !== "(null)" ? categoriesQuery.data.find((category) => category.id === value)! : null);
                 field.onChange(value);
               }}
               className="flex flex-col gap-2"
@@ -99,7 +96,7 @@ function SuggestedCategories({
                 key={"(null)"}
               >
                 <RadioGroupItem value={"(null)"} id={"(null)"} />
-                <Label htmlFor={"(null)"}>Nie wybrano kategorii</Label>
+                <Label>Nie wybrano kategorii</Label>
               </div>
             </RadioGroup>
           </FormControl>

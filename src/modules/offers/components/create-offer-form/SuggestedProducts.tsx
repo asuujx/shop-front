@@ -52,35 +52,47 @@ function SuggestedProducts({ query, categoryId, form, selectedProduct, handleCha
   }, [query, categoryId]);
 
   return (
-    <FormField control={form.control} name="productId" render={() => (
-      <FormItem>
-        <FormControl>
-          <RadioGroup value={selectedProduct?.id ?? "(null)"} onValueChange={handleValueChange}>
-            {products?.map((product) => (
+    <FormField
+      control={form.control}
+      name="productId"
+      render={() => (
+        <FormItem>
+          <FormControl>
+            <RadioGroup
+              value={selectedProduct?.id ?? "(null)"}
+              onValueChange={handleValueChange}
+            >
+              {products?.map((product) => (
+                <div
+                  className="flex items-center gap-2 border rounded-lg px-2 py-4"
+                  key={product.id}
+                >
+                  <RadioGroupItem value={product.id} id={product.id} />
+                  <Label htmlFor={product.id} className="grow">
+                    {product.name}
+                  </Label>
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    onClick={() => handleAutoFillClick(product)}
+                  >
+                    Autouzupełnij
+                  </Button>
+                </div>
+              ))}
               <div
-                className="flex items-center gap-2 border rounded-lg px-2 py-4"
-                key={product.id}
+                className="flex gap-2 items-center border px-2 py-4 rounded-lg"
+                key={"(null)"}
               >
-                <RadioGroupItem value={product.id} id={product.id} />
-                <Label htmlFor={product.id} className="grow">
-                  {product.name}
-                </Label>
-                <Button type="button" variant="secondary" onClick={() => handleAutoFillClick(product)}>
-                  Autouzupełnij
-                </Button>
+                <RadioGroupItem value={"(null)"} id={"(null)"} />
+                <Label>Nie wybrano produktu</Label>
               </div>
-            ))}
-            <div className="flex gap-2 items-center border px-2 py-4 rounded-lg">
-              <RadioGroupItem value="(null)" id="(null)" />
-              <Label htmlFor="(null)">
-                Nie wybrano produktu
-              </Label>
-            </div>
-          </RadioGroup>
-        </FormControl>
-        <FormMessage />
-      </FormItem>
-    )} />
+            </RadioGroup>
+          </FormControl>
+          <FormMessage />
+        </FormItem>
+      )}
+    />
   );
 }
 

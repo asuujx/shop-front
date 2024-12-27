@@ -19,7 +19,8 @@ import { z } from "zod";
 interface CategoriesListProps {
   form: UseFormReturn<z.infer<typeof createOfferSchema>>;
   category: Category | null;
-  setCategory: (category: Category) => void;
+  // setCategory: (category: Category) => void;
+  handleChangeSelectedCategory: (category: Category | null) => void
 }
 
 const fetchBaseCategories = async () => {
@@ -27,7 +28,7 @@ const fetchBaseCategories = async () => {
   return response.data;
 };
 
-function CategoriesList({ form, category, setCategory }: CategoriesListProps) {
+function CategoriesList({ form, category, handleChangeSelectedCategory }: CategoriesListProps) {
   const { data: categories, status } = useQuery({
     queryKey: ["categories", "base"],
     queryFn: fetchBaseCategories,
@@ -45,7 +46,8 @@ function CategoriesList({ form, category, setCategory }: CategoriesListProps) {
       setSelectedCategories(category.children);
     } else {
       form.setValue("categoryId", category.id);
-      setCategory(category);
+      // setCategory(category);
+      handleChangeSelectedCategory(category);
       setDialogOpen(false);
       setSelectedCategories(categories!);
       setSelectedCategoriesPath([]);

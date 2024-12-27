@@ -189,6 +189,13 @@ function CreateOfferForm() {
     form.setValue("productId", "(null)");
   };
 
+  const handleChangeSelectedCategory = (category: Category | null) => {
+    setSelectedCategory(category);
+    if (category === null) {
+      handleChangeSelectedProduct(null)
+    };
+  }
+
   const handleChangeSelectedProduct = (product: Product | null) => {
     updateAttributeValues(product);
     setSelectedProduct(() => product);
@@ -379,12 +386,12 @@ function CreateOfferForm() {
               query={debouncedTitle}
               form={form}
               category={selectedCategory}
-              setCategory={setSelectedCategory}
+              handleChangeSelectedCategory={handleChangeSelectedCategory}
             />
             <CategoriesList
               form={form}
               category={selectedCategory}
-              setCategory={setSelectedCategory}
+              handleChangeSelectedCategory={handleChangeSelectedCategory}
             />
           </CardContent>
         </Card>
