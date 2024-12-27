@@ -27,6 +27,7 @@ function AddressForm({ setOpen }: AddressFormProps) {
       companyName: "",
       postalCode: "",
       city: "",
+      voivodeship: "",
       street: "",
       building: "",
       apartment: "",
@@ -143,7 +144,7 @@ function AddressForm({ setOpen }: AddressFormProps) {
           name="voivodeship"
           render={({ field }) => (
             <FormItem>
-              <Select onValueChange={field.onChange}>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <SelectTrigger>
                   <SelectValue placeholder="Województwo" />
                 </SelectTrigger>
