@@ -1,3 +1,4 @@
+import { Badge } from "@/modules/core/components/ui/badge";
 import { Card, CardContent, CardTitle } from "@/modules/core/components/ui/card";
 import {
   Select,
@@ -101,7 +102,21 @@ function ProductsList() {
                           <p className="text-muted-foreground">
                             {attribute.name}:
                           </p>
-                          <p>{attribute.value}</p>
+                          {attribute.name === "Funkcje" ? (
+                            attribute.options.length > 0 ? (
+                              attribute.options.map((option) => (
+                                <Badge key={option.id}>{option.value}</Badge>
+                              ))
+                            ) : (
+                              <Badge>{attribute.value}</Badge>
+                            )
+                          ) : attribute.options.length > 0 ? (
+                            attribute.options.map((option) => (
+                              <p key={option.id}>{option.value}</p>
+                            ))
+                          ) : (
+                            <p>{attribute.value}</p>
+                          )}
                         </span>
                       ))}
                   </div>
