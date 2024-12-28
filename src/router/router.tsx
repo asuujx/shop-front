@@ -1,13 +1,17 @@
 import Admin from "@/modules/admin/admin";
-import App from "@/modules/core/pages/App";
 import Login from "@/modules/auth/pages/Login";
 import ResetPassword from "@/modules/auth/pages/ResetPassword";
 import SignUp from "@/modules/auth/pages/SignUp";
 import Verify from "@/modules/auth/pages/Verify";
+import Checkout from "@/modules/checkout/pages/Checkout";
+import Complete from "@/modules/checkout/pages/Complete";
+import StripeElements from "@/modules/core/components/StripeElements";
+import App from "@/modules/core/pages/App";
 import Home from "@/modules/home/pages/Home";
 import CreateOffer from "@/modules/offers/pages/CreateOffer";
 import Offer from "@/modules/offers/pages/OfferPage";
 import OffersList from "@/modules/offers/pages/OffersList";
+import OrderPage from "@/modules/order/pages/OrderPage";
 import Product from "@/modules/products/pages/ProductPage";
 import ProductsList from "@/modules/products/pages/ProductsList";
 import User from "@/modules/user/pages/User";
@@ -21,7 +25,7 @@ export const router = createBrowserRouter([
     element: <App />,
     children: [
       {
-        path: "home",
+        index: true,
         element: <Home />,
       },
       {
@@ -55,8 +59,8 @@ export const router = createBrowserRouter([
           {
             path: "orders",
             element: <UserOrders />,
-          }
-        ]
+          },
+        ],
       },
       {
         path: "offers",
@@ -87,6 +91,24 @@ export const router = createBrowserRouter([
           {
             path: ":id",
             element: <Product />,
+          },
+        ],
+      },
+      {
+        path: "order",
+        element: <OrderPage />
+      },
+      {
+        path: "checkout",
+        element: <StripeElements />,
+        children: [
+          {
+            index: true,
+            element: <Checkout />,
+          },
+          {
+            path: "complete",
+            element: <Complete />,
           },
         ],
       },

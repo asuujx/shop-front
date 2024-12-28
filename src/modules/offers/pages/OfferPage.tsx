@@ -1,7 +1,7 @@
 import { Button } from "@/modules/core/components/ui/button";
 import axiosInstance from "@/modules/core/lib/axios-instance";
 import { useQuery } from "@tanstack/react-query";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Offer } from "types";
 import OfferImagesCarousel from "../components/offer-page/OfferImagesCarousel";
 
@@ -13,10 +13,16 @@ const fetchOffer = async (offerId: string) => {
 function OfferPage() {
   const offerId = useParams().id;
 
+  const navigate = useNavigate();
+
   const { data: offer } = useQuery({
     queryKey: ["offer", offerId],
     queryFn: () => fetchOffer(offerId!),
   });
+
+  const handleBuyNowClick = () => {
+    navigate("/order", { state: { offerId } })
+  }
 
   return (
     <div className="max-w-screen-xl mt-20 flex flex-col items-center m-5 md:mx-auto">
@@ -60,7 +66,7 @@ function OfferPage() {
 
               {/* Price */}
               <div className="flex gap-2 items-center">
-                <Button>Kup teraz</Button>
+                <Button onClick={handleBuyNowClick}>Kup teraz</Button>
                 <p className="text-xl text-primary font-bold">
                   {offer.price} zł
                 </p>

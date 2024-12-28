@@ -31,7 +31,7 @@ interface ProductOffersSheetProps {
 
 const fetchOffers = async (productId: string, sort: string, order: string) => {
   const response = await axiosInstance.get<Offer[]>(
-    `/offers?filter=productId:eq:${productId}&sort=${sort}:${order}`
+    `/offers/active?filter=productId:eq:${productId}&sort=${sort}:${order}`
   );
   return response.data;
 };

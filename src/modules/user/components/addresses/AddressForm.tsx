@@ -35,7 +35,7 @@ function AddressForm({ setOpen }: AddressFormProps) {
   });
 
   const onSubmit = (values: z.infer<typeof addressSchema>) => {
-    console.log(values);
+    // console.log(values);
     axiosInstance
       .post("/delivery-addresses", values)
       .then((response) => {

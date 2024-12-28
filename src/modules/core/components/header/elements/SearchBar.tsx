@@ -26,7 +26,7 @@ function SearchBar() {
 
   const handleSearchResultClick = (productId: string) => {
     navigate(`/products/${productId}`);
-    console.log(productId);
+    // console.log(productId);
     setSearch("");
   };
 

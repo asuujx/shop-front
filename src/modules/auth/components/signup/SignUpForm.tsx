@@ -36,7 +36,7 @@ function SignUpForm() {
     axiosInstance
       .post("/auth/basic/signup/personal", values)
       .then((response) => {
-        console.log(response);
+        // console.log(response);
         if (response.status === 201) {
           setOpen(true);
           setEmail(values.email);

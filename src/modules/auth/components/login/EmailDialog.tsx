@@ -33,7 +33,7 @@ function EmailDialog({ open, setOpen }: EmailDialogProps) {
   });
 
   const onSubmit = async (values: z.infer<typeof emailSchema>) => {
-    console.log(values);
+    // console.log(values);
     axiosInstance
       .post("/auth/basic/forgot-password", values)
       .then((response) => {

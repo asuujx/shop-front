@@ -19,7 +19,7 @@ function ProductPage() {
     queryFn: () => fetchProduct(productId!),
   });
 
-  console.log(product);
+  // console.log(product);
 
   return (
     <div className="max-w-screen-xl mt-20 flex flex-col items-center m-5 md:mx-auto">

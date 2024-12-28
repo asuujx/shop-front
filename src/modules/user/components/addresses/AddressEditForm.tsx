@@ -13,7 +13,7 @@ import { z } from "zod";
 
 
 interface AddressEditFormProps {
-  id: number;
+  id: string;
   data: Address;
   setOpen: (open: boolean) => void;
 }

@@ -47,7 +47,7 @@ function OffersList() {
     queryFn: () => fetchProduct(productId!),
   });
 
-  console.log(offers);
+  // console.log(offers);
 
   return (
     <div className="max-w-screen-xl mt-20 flex flex-col items-center m-5 md:mx-auto">

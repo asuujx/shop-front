@@ -226,7 +226,7 @@ const ProductConfirmationDialogForm = ({
   };
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    console.log(values);
+    // console.log(values);
 
     const newImages = values.images.newImages.map((image) => image.file);
     const existingImages = values.images.existingImages.map(

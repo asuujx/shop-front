@@ -126,7 +126,7 @@ const CreateCategoryForm = ({ data }: CreateCategoryFormProps) => {
       parentId: values.parentId === "(null)" ? null : values.parentId,
       attributes: transformedAttributes,
     };
-    console.log(body);
+    // console.log(body);
 
     await mutateAsync(body);
   };
