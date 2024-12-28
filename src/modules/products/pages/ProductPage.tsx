@@ -3,9 +3,8 @@ import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import { Product } from "types";
 import ProductOffersSheet from "../components/ProductOffersSheet";
-import ProductImagesCarousel from "../components/product-page/ProductImagesCarousel";
-import { Badge } from "@/modules/core/components/ui/badge";
 import ProductAttributes from "../components/product-page/ProductAttributes";
+import ProductImagesCarousel from "../components/product-page/ProductImagesCarousel";
 
 const fetchProduct = async (productId: string) => {
   const response = await axiosInstance.get<Product>(`/products/${productId}`);
