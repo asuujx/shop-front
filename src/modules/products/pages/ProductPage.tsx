@@ -4,6 +4,8 @@ import { useParams } from "react-router-dom";
 import { Product } from "types";
 import ProductOffersSheet from "../components/ProductOffersSheet";
 import ProductImagesCarousel from "../components/product-page/ProductImagesCarousel";
+import { Badge } from "@/modules/core/components/ui/badge";
+import ProductAttributes from "../components/product-page/ProductAttributes";
 
 const fetchProduct = async (productId: string) => {
   const response = await axiosInstance.get<Product>(`/products/${productId}`);
@@ -18,25 +20,22 @@ function ProductPage() {
     queryFn: () => fetchProduct(productId!),
   });
 
+  console.log(product);
+
   return (
     <div className="max-w-screen-xl mt-20 flex flex-col items-center m-5 md:mx-auto">
       {product && (
         <div>
           <div className="flex flex-wrap gap-5">
             {/* Images */}
-              <ProductImagesCarousel product={product} />
+            <ProductImagesCarousel product={product} />
 
             <div>
               <h1 className="mb-5 text-4xl font-semibold">{product.name}</h1>
 
               {/* Specs */}
-              <h2 className="text-xl mb-2">Specyfikacja: </h2>
-              {product.attributes.map((attribute) => (
-                <div key={attribute.id} className="flex gap-2">
-                  <p className="text-muted-foreground">{attribute.name}:</p>
-                  <p>{attribute.value}</p>
-                </div>
-              ))}
+              <h2 className="text-xl font-semibold mb-2">Specyfikacja: </h2>
+              <ProductAttributes product={product} />
 
               {/* Offers */}
               <ProductOffersSheet productId={product.id} />
