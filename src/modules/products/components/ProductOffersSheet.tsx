@@ -5,6 +5,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/modules/core/components/ui/card";
+import { ScrollArea } from "@/modules/core/components/ui/scroll-area";
 import {
   Select,
   SelectContent,
@@ -50,7 +51,8 @@ function ProductOffersSheet({ productId }: ProductOffersSheetProps) {
       <SheetTrigger className="bg-primary text-primary-foreground mt-5 px-16 py-2 rounded-md">
         Oferty
       </SheetTrigger>
-      <SheetContent className="px-10">
+
+      <SheetContent className="flex flex-col px-10">
         <SheetHeader>
           <SheetTitle className="mb-5">Oferty</SheetTitle>
         </SheetHeader>
@@ -79,31 +81,34 @@ function ProductOffersSheet({ productId }: ProductOffersSheetProps) {
             </SelectContent>
           </Select>
         </div>
-
-        <div className="mt-5 flex flex-col gap-5">
-          {offers?.map((offer) => (
-            <Link key={offer.id} to={`/offers/${offer.id}`}>
-              <Card>
-                <CardHeader>
-                  <CardTitle>{offer.title}</CardTitle>
-                  <CardDescription>
-                    {offer.author.firstName} {offer.author.lastName}
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <span className="flex gap-2 text-muted-foreground">
-                    Stan:{" "}
-                    <p className="text-foreground">{offer.productState.name}</p>
-                  </span>
-                  <span className="flex gap-2 text-muted-foreground">
-                    Cena:{" "}
-                    <p className="text-primary font-bold">{offer.price} zł</p>
-                  </span>
-                </CardContent>
-              </Card>
-            </Link>
-          ))}
-        </div>
+        <ScrollArea className="h-full mt-5">
+          <div className="flex flex-col gap-5">
+            {offers?.map((offer) => (
+              <Link key={offer.id} to={`/offers/${offer.id}`}>
+                <Card>
+                  <CardHeader>
+                    <CardTitle>{offer.title}</CardTitle>
+                    <CardDescription>
+                      {offer.author.firstName} {offer.author.lastName}
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <span className="flex gap-2 text-muted-foreground">
+                      Stan:{" "}
+                      <p className="text-foreground">
+                        {offer.productState.name}
+                      </p>
+                    </span>
+                    <span className="flex gap-2 text-muted-foreground">
+                      Cena:{" "}
+                      <p className="text-primary font-bold">{offer.price} zł</p>
+                    </span>
+                  </CardContent>
+                </Card>
+              </Link>
+            ))}
+          </div>
+        </ScrollArea>
       </SheetContent>
     </Sheet>
   );
