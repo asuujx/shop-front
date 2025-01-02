@@ -28,20 +28,22 @@ function Verify() {
     [token];
 
   return (
-    <div className="flex items-center justify-center">
-      <Card className="p-5">
-        <CardHeader className="text-center text-4xl font-bold">
-          Dziękujemy!
-        </CardHeader>
-        <CardContent>
-          <p>Twój adres e-mail został pozytywnie zweryfikowany.</p>
-        </CardContent>
-        <CardFooter>
-          <Button className="w-full">
-            <Link to="/login">Zaloguj się</Link>
-          </Button>
-        </CardFooter>
-      </Card>
+    <div className="max-w-screen-xl mt-20 mx-4 lg:mx-auto flex flex-col items-center">
+      <div className="flex items-center justify-center">
+        <Card className="p-5">
+          <CardHeader className="text-center text-4xl font-bold">
+            Dziękujemy!
+          </CardHeader>
+          <CardContent>
+            <p>Twój adres e-mail został pozytywnie zweryfikowany.</p>
+          </CardContent>
+          <CardFooter>
+            <Button className="w-full">
+              <Link to="/login">Zaloguj się</Link>
+            </Button>
+          </CardFooter>
+        </Card>
+      </div>
     </div>
   );
 }
