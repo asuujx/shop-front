@@ -11,7 +11,7 @@ import { createOfferSchema } from "@/modules/offers/schemas/createOfferSchema";
 import { useQuery } from "@tanstack/react-query";
 import clsx from "clsx";
 import { ChevronLeftIcon, ChevronRightIcon, List } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { UseFormReturn } from "react-hook-form";
 import { Category } from "types";
 import { z } from "zod";
@@ -34,6 +34,8 @@ function CategoriesList({ form, category, handleChangeSelectedCategory }: Catego
     queryFn: fetchBaseCategories,
   });
 
+  console.log(categories);
+
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedCategories, setSelectedCategories] = useState<Category[]>([]);
   const [selectedCategoriesPath, setSelectedCategoriesPath] = useState<
@@ -46,7 +48,6 @@ function CategoriesList({ form, category, handleChangeSelectedCategory }: Catego
       setSelectedCategories(category.children);
     } else {
       form.setValue("categoryId", category.id);
-      // setCategory(category);
       handleChangeSelectedCategory(category);
       setDialogOpen(false);
       setSelectedCategories(categories!);
@@ -59,42 +60,57 @@ function CategoriesList({ form, category, handleChangeSelectedCategory }: Catego
     path.pop();
 
     if (!path.length) {
-      setSelectedCategories(categories!);
-      setSelectedCategoriesPath(path);
+      setSelectedCategories(categories ?? []);
+      setSelectedCategoriesPath([]);
       return;
     }
 
-    let category: Category | null = null;
+    if (categories) {
+      let category: Category | null = null;
 
-    for (const id of path) {
-      category = categories!.find((category) => category.id === id)!;
-    }
+      for (const id of path) {
+        const foundCategory = categories.find((category) => category.id === id);
 
-    setSelectedCategories(category!.children);
-    setSelectedCategoriesPath(path);
-  };
+        if (!foundCategory) {
+          return;
+        }
 
-  if (status === "success" && !selectedCategories.length) {
-    setSelectedCategories(categories);
+        category = foundCategory
+      }
+
+      if (category) {
+        setSelectedCategories(category.children);
+        setSelectedCategoriesPath(path);
+      }
+    };
   }
 
   const onOpenChange = (open: boolean) => {
     setDialogOpen(open);
 
     if (!open) {
-      setSelectedCategories(categories!);
+      setSelectedCategories(categories ?? []);
       setSelectedCategoriesPath([]);
     }
   };
 
+  useEffect(() => {
+    if (categories && !!categories.length) {
+      setSelectedCategories(categories);
+    }
+  }, [categories]);
+
   return (
     <div>
-      <Dialog open={dialogOpen} onOpenChange={onOpenChange}>
+      <Dialog open={dialogOpen}
+        onOpenChange={onOpenChange}
+      >
         <DialogTrigger asChild>
           <Button
             type="button"
             variant="outline"
             className="w-full flex items-center justify-center"
+            disabled={!categories?.length}
           >
             <List />
             <p>Wszystkie kategorie</p>
