@@ -58,32 +58,68 @@ const OfferDetailsDialog = ({
           </DialogDescription>
         </DialogHeader>
         <div>
-          <p>Tytuł: {data.title}</p>
+          <div className="flex gap-2">
+            <p className="text-muted-foreground">Tytuł: </p>
+            <span>{data.title}</span>
+          </div>
+
           <div className="my-1">
-            <p>Opis:</p>
+            <p className="text-muted-foreground">Opis:</p>
             <ScrollArea className="h-32">
               {!!data.description?.length
                 ? data.description
                 : "[Oferta nie zawiera opisu.]"}
             </ScrollArea>
           </div>
-          <p>Cena: {data.price} zł</p>
-          <p>Data utworzenia: {createdAt}</p>
-          <p>Data edycji: {updatedAt}</p>
+
+          <div className="flex gap-2">
+            <p className="text-muted-foreground">Cena: </p>
+            <p>{data.price} zł</p>
+          </div>
+
+          <div className="flex gap-2">
+            <p className="text-muted-foreground">Data utworzenia: </p>
+            <p>{createdAt}</p>
+          </div>
+
+          <div className="flex gap-2">
+            <p className="text-muted-foreground">Data edycji: </p>
+            <p>{updatedAt}</p>
+          </div>
 
           <div className="my-2">
             <p className="font-semibold">Produkt</p>
-            <p>Nazwa: {data.product.name}</p>
-            <p>Stan: {data.productState.name}</p>
-            <p>Status zatwierdzenia: {productStatusText}</p>
+
+            <div className="flex gap-2">
+              <p className="text-muted-foreground">Nazwa: </p>
+              <p>{data.product.name}</p>
+            </div>
+
+            <div className="flex gap-2">
+              <p className="text-muted-foreground">Stan: </p>
+              <p>{data.productState.name}</p>
+            </div>
+
+            <div className="flex gap-2">
+              <p className="text-muted-foreground">Status zatwierdzenia: </p>
+              <p>{productStatusText}</p>
+            </div>
           </div>
 
           <div className="my-2">
             <p className="font-semibold">Autor</p>
-            <p>Email: {data.author.email}</p>
-            <p>
-              Imię: {data.author.firstName} {data.author.lastName}
-            </p>
+
+            <div className="flex gap-2">
+              <p className="text-muted-foreground">Email: </p>
+              <p>{data.author.email}</p>
+            </div>
+
+            <div className="flex gap-2">
+              <p className="text-muted-foreground">Imię:</p>
+              <p>
+                {data.author.firstName} {data.author.lastName}
+              </p>
+            </div>
           </div>
 
           {!isOfferAcceptable && (

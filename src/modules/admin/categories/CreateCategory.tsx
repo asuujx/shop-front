@@ -26,7 +26,7 @@ const CreateCategory = ({ data }: CreateCategoryProps) => {
           <DialogTitle>Utwórz kategorię</DialogTitle>
           <DialogDescription />
         </DialogHeader>
-        <ScrollArea scrollHideDelay={0} className="max-h-[80vh]">
+        <ScrollArea scrollHideDelay={0} className="max-h-[80vh] pr-4">
           <CreateCategoryForm data={data} />
         </ScrollArea>
       </DialogContent>

@@ -4,12 +4,11 @@ import Products from "./products/Products";
 
 const Admin = () => {
   return (
-    <div className="w-screen h-screen">
       <div className="max-w-screen-xl mx-4 lg:mx-auto flex flex-col items-center justify-center">
-        <h1 className="mt-10 ml-5 text-4xl font-semibold mb-8">
+        <h1 className="mt-20 ml-5 text-4xl font-semibold mb-10">
           Panel Administratora
         </h1>
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-5 mb-5">
           <section id="categories">
             <Categories />
           </section>
@@ -21,7 +20,6 @@ const Admin = () => {
           </section>
         </div>
       </div>
-    </div>
   );
 };
 export default Admin;
