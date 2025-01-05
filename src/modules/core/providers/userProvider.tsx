@@ -2,6 +2,7 @@ import axiosInstance from "@/modules/core/lib/axios-instance";
 import { createContext, useContext, useState } from "react";
 
 interface User {
+  id: string;
   firstName: string;
   lastName: string;
 }
@@ -21,8 +22,8 @@ const UserContext = createContext<UserContextProps | null>(null);
 export const UserProvider = ({ children }: UserProviderProps) => {
   const [user, setUser] = useState<User | null>(null);
 
-  const login = ({ firstName, lastName }: User) => {
-    setUser({ firstName, lastName });
+  const login = ({ id, firstName, lastName }: User) => {
+    setUser({ id, firstName, lastName });
   };
 
   const logout = () => {

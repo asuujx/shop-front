@@ -44,6 +44,7 @@ function LoginForm() {
       .then((response) => {
         if (response.data.emailVerified) {
           login({
+            id: response.data.id,
             firstName: response.data.firstName,
             lastName: response.data.lastName,
           });

@@ -34,6 +34,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           .get("/auth/user")
           .then((response) => {
             login({
+              id: response.data.id,
               firstName: response.data.firstName,
               lastName: response.data.lastName,
             });
