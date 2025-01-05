@@ -64,7 +64,7 @@ function SuggestedProducts({ query, categoryId, form, selectedProduct, handleCha
             >
               {products?.map((product) => (
                 <div
-                  className="flex items-center gap-2 border rounded-lg px-2 py-4"
+                  className="bg-background flex items-center gap-2 border rounded-lg px-2 py-4"
                   key={product.id}
                 >
                   <RadioGroupItem value={product.id} id={product.id} />
@@ -81,7 +81,7 @@ function SuggestedProducts({ query, categoryId, form, selectedProduct, handleCha
                 </div>
               ))}
               <div
-                className="flex gap-2 items-center border px-2 py-4 rounded-lg"
+                className="bg-background flex gap-2 items-center border px-2 py-4 rounded-lg"
                 key={"(null)"}
               >
                 <RadioGroupItem value={"(null)"} id={"(null)"} />

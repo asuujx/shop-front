@@ -524,7 +524,7 @@ function CreateOfferForm() {
                     >
                       {offerStates?.map((state: any) => (
                         <div
-                          className="flex gap-2 items-center border px-2 py-4 rounded-lg"
+                          className="bg-background flex gap-2 items-center border px-2 py-4 rounded-lg"
                           key={state.id}
                         >
                           <RadioGroupItem value={state.id} id={state.id} />
@@ -538,7 +538,7 @@ function CreateOfferForm() {
                           </div>
                         </div>
                       ))}
-                      <div className="flex gap-2 items-center border px-2 py-4 rounded-lg">
+                      <div className="bg-background flex gap-2 items-center border px-2 py-4 rounded-lg">
                         <RadioGroupItem value="(null)" />
                         <Label htmlFor="(null)">
                           Nie wybrano stanu produktu

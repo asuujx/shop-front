@@ -39,6 +39,7 @@ function CategoryAttributes({
                 value={attribute.value[0] === "" ? [] : attribute.value}
                 placeholder={`${attribute.dbData.name}${attribute.dbData.required ? " *" : ""}`}
                 disabled={isSuggestedProductSelected}
+                className="bg-background"
               />
             );
           } else {

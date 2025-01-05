@@ -59,7 +59,7 @@ function SuggestedCategories({
             >
               {category && (
                 <div
-                  className="flex items-center gap-2 border rounded-lg px-2 py-4"
+                  className="bg-background flex items-center gap-2 border rounded-lg px-2 py-4"
                   key={category.id}
                 >
                   <RadioGroupItem value={category.id} id={category.id} />
@@ -72,7 +72,7 @@ function SuggestedCategories({
                 )
                 .map((category: any) => (
                   <div
-                    className="flex items-center gap-2 border rounded-lg px-2 py-4"
+                    className="bg-background flex items-center gap-2 border rounded-lg px-2 py-4"
                     key={category.id}
                   >
                     <RadioGroupItem value={category.id} id={category.id} />
@@ -92,7 +92,7 @@ function SuggestedCategories({
                 </div>
               )}
               <div
-                className="flex items-center gap-2 border rounded-lg px-2 py-4"
+                className="bg-background flex items-center gap-2 border rounded-lg px-2 py-4"
                 key={"(null)"}
               >
                 <RadioGroupItem value={"(null)"} id={"(null)"} />
