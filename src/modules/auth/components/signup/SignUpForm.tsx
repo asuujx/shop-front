@@ -8,7 +8,14 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { Button } from "@/modules/core/components/ui/button";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/modules/core/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/modules/core/components/ui/form";
 import { Input } from "@/modules/core/components/ui/input";
 import StrongPasswordInformation from "../password/StrongPasswordInformation";
 import SignUpDialog from "./SignUpDialog";
@@ -55,7 +62,7 @@ function SignUpForm() {
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
-  }
+  };
 
   return (
     <Form {...form}>
@@ -68,7 +75,11 @@ function SignUpForm() {
             name="firstName"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Imię</FormLabel>
+                <FormLabel>
+                  <span className="flex">
+                    Imię <p className="text-destructive">*</p>
+                  </span>
+                </FormLabel>
                 <FormControl>
                   <Input {...field} type="text" placeholder="Jan" />
                 </FormControl>
@@ -81,7 +92,11 @@ function SignUpForm() {
             name="lastName"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Nazwisko</FormLabel>
+                <FormLabel>
+                  <span className="flex">
+                    Nazwisko<p className="text-destructive">*</p>
+                  </span>
+                </FormLabel>
                 <FormControl>
                   <Input {...field} type="text" placeholder="Kowalski" />
                 </FormControl>
@@ -95,9 +110,17 @@ function SignUpForm() {
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Adres e-mail</FormLabel>
+              <FormLabel>
+                <span className="flex">
+                  Adres e-mail<p className="text-destructive">*</p>
+                </span>
+              </FormLabel>
               <FormControl>
-                <Input {...field} type="email" placeholder="np. jan.kowalski@poczta.pl" />
+                <Input
+                  {...field}
+                  type="email"
+                  placeholder="np. jan.kowalski@poczta.pl"
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -109,7 +132,11 @@ function SignUpForm() {
             name="password"
             render={({ field }) => (
               <FormItem className="w-1/2">
-                <FormLabel>Hasło</FormLabel>
+                <FormLabel>
+                  <span className="flex">
+                    Hasło<p className="text-destructive">*</p>
+                  </span>
+                </FormLabel>
                 <FormControl>
                   <div className="relative">
                     <Input
@@ -117,9 +144,8 @@ function SignUpForm() {
                       type={showPassword ? "text" : "password"}
                       onChange={(e) => {
                         field.onChange(e);
-                        setPassword(e.target.value)
-                      }
-                      }
+                        setPassword(e.target.value);
+                      }}
                     />
                     <span
                       onClick={togglePasswordVisibility}
@@ -138,12 +164,13 @@ function SignUpForm() {
             name="repeatPassword"
             render={({ field }) => (
               <FormItem className="w-1/2">
-                <FormLabel>Powtórz hasło</FormLabel>
+                <FormLabel>
+                  <span className="flex">
+                    Powtórz hasło<p className="text-destructive">*</p>
+                  </span>
+                </FormLabel>
                 <FormControl>
-                  <Input
-                    {...field}
-                    type={showPassword ? "text" : "password"}
-                  />
+                  <Input {...field} type={showPassword ? "text" : "password"} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

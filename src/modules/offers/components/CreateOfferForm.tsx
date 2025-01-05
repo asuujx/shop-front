@@ -203,8 +203,6 @@ function CreateOfferForm() {
   };
 
   const onSubmit = async (values: z.infer<typeof createOfferSchema>) => {
-    // console.log("onSubmit: ", values);
-
     // Attribute validation
     const missingRequiredAttributes = categoryAttributes.filter(
       (attribute) => attribute.dbData.required && attribute.value[0] === ""
