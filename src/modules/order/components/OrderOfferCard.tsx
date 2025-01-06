@@ -27,7 +27,7 @@ function OrderOfferCard({ offerId }: OfferCardProps) {
     <Card>
       <CardContent className="flex gap-5">
         <img
-          src={`${import.meta.env.VITE_API_BASE_URL}/${offer?.images[0].url}`}
+          src={`${import.meta.env.VITE_API_BASE_URL}/${offer?.images[0]?.url}`}
           crossOrigin="anonymous"
           className="w-32 h-32 object-cover rounded-lg"
           alt={offer?.product.name}
