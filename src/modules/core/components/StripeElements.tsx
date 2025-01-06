@@ -7,8 +7,6 @@ function StripeElements() {
   const { clientSecret } = useStripeContext();
   const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PK);
 
-  console.log(clientSecret);
-
   const appearance: Appearance = {
     theme: "stripe",
   };
@@ -24,7 +22,7 @@ function StripeElements() {
         >
           <Outlet />
         </Elements>
-      )} 
+      )}
     </>
   );
 }
