@@ -26,8 +26,8 @@ function OfferPage() {
   }
 
   // console.log(offer);
-  console.log("offer:", offer?.author.id);
-  console.log("user:", user?.id);
+  // console.log("offer:", offer?.author.id);
+  // console.log("user:", user?.id);
 
   return (
     <div className="max-w-screen-xl mt-20 flex flex-col items-center m-5 md:mx-auto">

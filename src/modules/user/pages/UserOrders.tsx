@@ -24,9 +24,13 @@ function UserOrders() {
           <Link to={`/offers/${order.offerId}`} key={order.id}>
             <Card>
               <CardHeader>
-                <CardTitle>{order.status}</CardTitle>
+                <CardTitle>{order.id}</CardTitle>
               </CardHeader>
               <CardContent>
+                <div className="flex gap-2">
+                  <p className="font-semibold">Status: </p>
+                  <p>{order.status}</p>
+                </div>
               </CardContent>
             </Card>
           </Link>
