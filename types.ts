@@ -91,6 +91,7 @@ export interface Offer {
   description: string;
   price: number;
   status: OfferStatus;
+  canOrder: boolean;
   images: {
     id: string;
     url: string;

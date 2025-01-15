@@ -71,7 +71,7 @@ function OfferPage() {
 
               {/* Price */}
               <div className="flex gap-2 items-center">
-                <Button onClick={handleBuyNowClick} disabled={user?.id === offer.author.id}>Kup teraz</Button>
+                <Button onClick={handleBuyNowClick} disabled={user?.id === offer.author.id || offer.canOrder == false}>Kup teraz</Button>
                 <p className="text-xl text-primary font-bold">
                   {offer.price} zł
                 </p>
